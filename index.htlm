@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estudio de Fonemas en Inglés</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --text: #0f172a;
+            --muted: #64748b;
+            --yellow-hl: #fef08a;
+            --blue-hl: #bfdbfe;
+            --radius: 12px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 16px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 700px;
+            background: var(--card);
+            border-radius: var(--radius);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+            padding: 24px;
+            min-height: 500px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .screen {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        h1 {
+            font-size: 1.6rem;
+            color: var(--primary);
+            text-align: center;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: var(--muted);
+            margin-bottom: 24px;
+            font-size: 0.95rem;
+        }
+
+        /* Selector de Sonido */
+        .group-title {
+            font-weight: bold;
+            color: #334155;
+            margin: 16px 0 8px 0;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 4px;
+        }
+
+        .grid-phonemes {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            gap: 12px;
+        }
+
+        .phoneme-card {
+            background: #f1f5f9;
+            border: 2px solid #cbd5e1;
+            border-radius: var(--radius);
+            padding: 16px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s;
+        }
+
+        .phoneme-card:hover {
+            border-color: var(--primary);
+            background: #eff6ff;
+            transform: translateY(-2px);
+        }
+
+        .phoneme-symbol {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .phoneme-example {
+            font-size: 0.85rem;
+            color: var(--muted);
+            margin-top: 4px;
+        }
+
+        /* Pantalla de Estudio */
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .btn-back {
+            background: #e2e8f0;
+            color: var(--text);
+            border: none;
+            padding: 8px 14px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .counter {
+            background: #dbeafe;
+            color: var(--primary);
+            font-weight: bold;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+
+        .main-card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: var(--radius);
+            padding: 24px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            margin-bottom: 20px;
+            min-height: 200px;
+        }
+
+        .word-title {
+            font-size: 2.3rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .sentences-wrapper {
+            margin-top: 16px;
+            width: 100%;
+        }
+
+        .en-text {
+            font-size: 1.25rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+
+        .es-text {
+            font-size: 1.05rem;
+            font-weight: normal;
+            color: #475569;
+            line-height: 1.4;
+        }
+
+        /* Resaltados */
+        .hl-yellow {
+            background-color: var(--yellow-hl);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        .hl-blue {
+            background-color: var(--blue-hl);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        /* Botones de Acción */
+        .action-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .btn:hover {
+            background: var(--primary-hover);
+        }
+
+        .btn-sec {
+            background: #64748b;
+        }
+
+        .btn-sec:hover {
+            background: #475569;
+        }
+
+        /* Navegación Frases */
+        .nav-grid {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-nav {
+            flex: 1;
+            background: #0f172a;
+        }
+
+        .btn-nav:disabled {
+            background: #cbd5e1;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- PANTALLA 1: ELECCIÓN DE SONIDO -->
+        <div id="screen-select" class="screen">
+            <h1>Práctica de Fonemas</h1>
+            <p class="subtitle">Elige el sonido que quieres practicar</p>
+            <div id="phonemes-container"></div>
+        </div>
+
+        <!-- PANTALLA 2: APRENDIZAJE Y ESTUDIO -->
+        <div id="screen-study" class="screen hidden">
+            <div class="top-bar">
+                <button class="btn-back" onclick="goBack()">← Volver</button>
+                <div id="counter-badge" class="counter">Frase 1 / 25</div>
+            </div>
+
+            <div class="main-card">
+                <div id="target-word" class="word-title">Hit</div>
+                
+                <div id="sentence-area" class="sentences-wrapper hidden">
+                    <div id="english-text" class="en-text"></div>
+                    <div id="spanish-text" class="es-text"></div>
+                </div>
+            </div>
+
+            <!-- Botones principales -->
+            <div class="action-grid">
+                <button class="btn" onclick="playAudio('word')">🔊 Escuchar Palabra</button>
+                <button class="btn" onclick="playAudio('sentence')">🔊 Escuchar Frase</button>
+                <button class="btn btn-sec" onclick="showSentence()">👁️ Leer Frase</button>
+                <button class="btn btn-sec" onclick="hideSentence()">🙈 Ocultar Frase</button>
+            </div>
+
+            <!-- Botones de frase anterior / siguiente -->
+            <div class="nav-grid">
+                <button id="btn-prev" class="btn btn-nav" onclick="prevSentence()">◀ Frase Anterior</button>
+                <button id="btn-next" class="btn btn-nav" onclick="nextSentence()">Frase Siguiente ▶</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // BASE DE DATOS DE FONEMAS Y CONFUSIONES
+        const data = {
+            "/ɪ/": {
+                category: "Vocales Cortas (Short Vowels)",
+                items: [
+                    { word: "Hit", en: "Don't hit the glass with your spoon.", es: "No golpees el vaso con tu cuchara.", targetEn: "hit", targetEs: "golpees" },
+                    { word: "Sit", en: "Please sit down and make yourself comfortable.", es: "Por favor, siéntate y ponte cómodo.", targetEn: "sit", targetEs: "siéntate" },
+                    { word: "Bit", en: "Can I have a small bit of chocolate?", es: "¿Puedo tomar un trocito de chocolate?", targetEn: "bit", targetEs: "trocito" }
+                ]
+            },
+            "/ɪ/ vs /iː/": {
+                category: "Posibles confusiones",
+                items: [
+                    { word: "Hit / Heat", en: "Don't hit the pot while keeping the heat low.", es: "No golpees la olla mientras mantienes el calor bajo.", targetEn: "hit, heat", targetEs: "golpees, calor" },
+                    { word: "Sit / Seat", en: "Please sit down on your assigned seat.", es: "Por favor, siéntate en tu asiento asignado.", targetEn: "sit, seat", targetEs: "siéntate, asiento" },
+                    { word: "Bit / Beet", en: "He ate a small bit of red beet.", es: "Él comió un pequeño trozo de remolacha roja.", targetEn: "bit, beet", targetEs: "trozo, remolacha" },
+                    { word: "Fit / Feet", en: "These shoes fit my tired feet well.", es: "Estos zapatos le quedan bien a mis pies cansados.", targetEn: "fit, feet", targetEs: "quedan, pies" },
+                    { word: "Bin / Been", en: "Have you been throwing papers in that bin?", es: "¿Has estado tirando papeles en esa papelera?", targetEn: "bin, been", targetEs: "estado, papelera" },
+                    { word: "Fill / Feel", en: "Fill the glass if you feel thirsty.", es: "Llena el vaso si te sientes sediento.", targetEn: "fill, feel", targetEs: "Llena, sientes" },
+                    { word: "Mill / Meal", en: "They ground wheat at the mill for a meal.", es: "Molieron trigo en el molino para una comida.", targetEn: "mill, meal", targetEs: "molino, comida" },
+                    { word: "Still / Steal", en: "Stand still so nobody can steal it.", es: "Quédate quieto para que nadie pueda robarlo.", targetEn: "still, steal", targetEs: "quieto, robarlo" },
+                    { word: "Chip / Cheap", en: "This computer chip is very cheap.", es: "Este chip de ordenador es muy barato.", targetEn: "chip, cheap", targetEs: "chip, barato" },
+                    { word: "Dip / Deep", en: "Dip your toes into the deep water.", es: "Moja tus dedos en el agua profunda.", targetEn: "dip, deep", targetEs: "Moja, profunda" },
+                    { word: "Hid / Heed", en: "She hid because she didn't heed the warning.", es: "Ella se escondió porque no prestó atención a la advertencia.", targetEn: "hid, heed", targetEs: "escondió, atención" },
+                    { word: "Kit / Keet", en: "He brought a first-aid kit for the trip.", es: "Él trajo un botiquín de primeros auxilios para el viaje.", targetEn: "kit", targetEs: "botiquín" },
+                    { word: "Lid / Lead", en: "Put the lid on to lead the steam away.", es: "Pon la tapa para guiar el vapor.", targetEn: "lid, lead", targetEs: "tapa, guiar" },
+                    { word: "Pick / Peak", en: "Pick the best flower at the mountain peak.", es: "Elige la mejor flor en la cima de la montaña.", targetEn: "pick, peak", targetEs: "Elige, cima" },
+                    { word: "Sin / Seen", en: "It is a sin that you have not seen it.", es: "Es un pecado que no lo hayas visto.", targetEn: "sin, seen", targetEs: "pecado, visto" },
+                    { word: "Slip / Sleep", en: "Don't slip on the floor before you sleep.", es: "No te resbales en el suelo antes de dormir.", targetEn: "slip, sleep", targetEs: "resbales, dormir" },
+                    { word: "Tin / Teen", en: "A teen opened the old metal tin.", es: "Un adolescente abrió la vieja lata de metal.", targetEn: "tin, teen", targetEs: "adolescente, lata" },
+                    { word: "Wick / Week", en: "Replace the candle wick this week.", es: "Reemplaza la mecha de la vela esta semana.", targetEn: "wick, week", targetEs: "mecha, semana" },
+                    { word: "Will / Wheel", en: "He has the will to fix the car wheel.", es: "Él tiene la voluntad de arreglar la rueda del coche.", targetEn: "will, wheel", targetEs: "voluntad, rueda" },
+                    { word: "Sick / Seek", en: "If you feel sick, seek medical help.", es: "Si te sientes enfermo, busca ayuda médica.", targetEn: "sick, seek", targetEs: "enfermo, busca" },
+                    { word: "Pill / Peel", en: "Take the pill after you peel the fruit.", es: "Toma la pastilla después de pelar la fruta.", targetEn: "pill, peel", targetEs: "pastilla, pelar" },
+                    { word: "List / Least", en: "Make a list of the things you want least.", es: "Haz una lista de las cosas que menos quieres.", targetEn: "list, least", targetEs: "lista, menos" },
+                    { word: "Grim / Greem", en: "His grim face turned green.", es: "Su rostro sombrío se puso verde.", targetEn: "grim", targetEs: "sombrío, verde" },
+                    { word: "Dip / Deep", en: "Take a deep breath before you dip.", es: "Toma una respiración profunda antes de sumergir.", targetEn: "deep, dip", targetEs: "profunda, sumergir" },
+                    { word: "Hit / Heat", en: "The heat wave hit the city hard.", es: "La ola de calor golpeó duro a la ciudad.", targetEn: "heat, hit", targetEs: "calor, golpeó" }
+                ]
+            }
+        };
+
+        let currentPhonemeList = [];
+        let index = 0;
+        let currentUtterance = null;
+
+        // CONSTRUCCIÓN AUTOMÁTICA DE LA PANTALLA PRINCIPAL
+        function buildSelectionScreen() {
+            const container = document.getElementById('phonemes-container');
+            container.innerHTML = '';
+
+            const categories = {};
+            for (const [key, val] of Object.entries(data)) {
+                if (!categories[val.category]) {
+                    categories[val.category] = [];
+                }
+                categories[val.category].push({ key, items: val.items });
+            }
+
+            for (const [catName, phonemes] of Object.entries(categories)) {
+                const groupTitle = document.createElement('div');
+                groupTitle.className = 'group-title';
+                groupTitle.innerText = catName;
+                container.appendChild(groupTitle);
+
+                const grid = document.createElement('div');
+                grid.className = 'grid-phonemes';
+
+                phonemes.forEach(p => {
+                    const firstWords = p.items.slice(0, 3).map(i => i.word).join(', ');
+                    
+                    const card = document.createElement('div');
+                    card.className = 'phoneme-card';
+                    card.onclick = () => startStudy(p.key);
+                    card.innerHTML = `
+                        <div class="phoneme-symbol">${p.key}</div>
+                        <div class="phoneme-example">${firstWords}</div>
+                    `;
+                    grid.appendChild(card);
+                });
+
+                container.appendChild(grid);
+            }
+        }
+
+        function startStudy(key) {
+            currentPhonemeList = data[key].items || [];
+            index = 0;
+            document.getElementById('screen-select').classList.add('hidden');
+            document.getElementById('screen-study').classList.remove('hidden');
+            renderCard();
+        }
+
+        function goBack() {
+            if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+            document.getElementById('screen-study').classList.add('hidden');
+            document.getElementById('screen-select').classList.remove('hidden');
+        }
+
+        function renderCard() {
+            if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+            const current = currentPhonemeList[index];
+
+            document.getElementById('counter-badge').innerText = `Frase ${index + 1} / ${currentPhonemeList.length}`;
+            document.getElementById('target-word').innerText = current.word;
+
+            // Procesar múltiples palabras/términos objetivo en inglés (separados por coma)
+            let htmlEn = current.en;
+            if (current.targetEn) {
+                const targetsEn = current.targetEn.split(',').map(t => t.trim());
+                targetsEn.forEach(t => {
+                    const regexEn = new RegExp(`\\b(${t})\\b`, 'gi');
+                    htmlEn = htmlEn.replace(regexEn, '<span class="hl-yellow">$1</span>');
+                });
+            }
+            document.getElementById('english-text').innerHTML = htmlEn;
+
+            // Procesar múltiples palabras/términos objetivo en español (separados por coma)
+            let htmlEs = current.es;
+            if (current.targetEs) {
+                const targetsEs = current.targetEs.split(',').map(t => t.trim());
+                targetsEs.forEach(t => {
+                    const regexEs = new RegExp(`\\b(${t})\\b`, 'gi');
+                    htmlEs = htmlEs.replace(regexEs, '<span class="hl-blue">$1</span>');
+                });
+            }
+            document.getElementById('spanish-text').innerHTML = htmlEs;
+
+            hideSentence();
+
+            document.getElementById('btn-prev').disabled = index === 0;
+            document.getElementById('btn-next').disabled = index === currentPhonemeList.length - 1;
+        }
+
+        function showSentence() {
+            document.getElementById('sentence-area').classList.remove('hidden');
+        }
+
+        function hideSentence() {
+            document.getElementById('sentence-area').classList.add('hidden');
+        }
+
+        function nextSentence() {
+            if (index < currentPhonemeList.length - 1) {
+                index++;
+                renderCard();
+            }
+        }
+
+        function prevSentence() {
+            if (index > 0) {
+                index--;
+                renderCard();
+            }
+        }
+
+        function playAudio(type) {
+            if (!('speechSynthesis' in window)) {
+                alert("Speech synthesis is not supported in this browser.");
+                return;
+            }
+
+            window.speechSynthesis.cancel();
+
+            const current = currentPhonemeList[index];
+            
+            if (type === 'word') {
+                const words = current.word.split(' / ');
+                if (words.length > 1) {
+                    const utterance1 = new SpeechSynthesisUtterance(words[0]);
+                    utterance1.lang = 'en-US';
+                    utterance1.rate = 0.85;
+
+                    const utterance2 = new SpeechSynthesisUtterance(words[1]);
+                    utterance2.lang = 'en-US';
+                    utterance2.rate = 0.85;
+
+                    window.speechSynthesis.speak(utterance1);
+                    window.speechSynthesis.speak(utterance2);
+                    currentUtterance = utterance2;
+                } else {
+                    currentUtterance = new SpeechSynthesisUtterance(current.word);
+                    currentUtterance.lang = 'en-US';
+                    currentUtterance.rate = 0.85;
+                    window.speechSynthesis.speak(currentUtterance);
+                }
+            } else {
+                currentUtterance = new SpeechSynthesisUtterance(current.en);
+                currentUtterance.lang = 'en-US';
+                currentUtterance.rate = 0.85;
+                window.speechSynthesis.speak(currentUtterance);
+            }
+        }
+
+        window.onload = buildSelectionScreen;
+    </script>
+</body>
+</html>
