@@ -892,6 +892,31 @@
             }
         }
 
+
+
+
+<button onclick="probarVoz()">Probar voz de Chrome</button>
+
+<script>
+function probarVoz() {
+    const voz = new SpeechSynthesisUtterance(
+        "Hello. This is a test of the English voice."
+    );
+
+    voz.lang = "en-US";
+
+    voz.onstart = () => alert("Chrome ha iniciado la voz.");
+    voz.onerror = (e) => alert("Error de voz: " + e.error);
+
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(voz);
+}
+</script>
+
+
+
+
+        
     </script>
 
 </body>
