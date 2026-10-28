@@ -74,7 +74,7 @@
         .group-title {
             font-weight: bold;
             color: #334155;
-            margin: 12px 0;
+            margin: 16px 0 8px 0;
             border-bottom: 2px solid #e2e8f0;
             padding-bottom: 4px;
         }
@@ -247,18 +247,11 @@
 <body>
 
     <div class="container">
-        <!-- PANTALLA 1: ELECCIÓN DE SONIDO -->
+        <!-- PANTALLA 1: ELECCIÓN DE SONIDO (Construcción automática) -->
         <div id="screen-select" class="screen">
             <h1>Práctica de Fonemas</h1>
             <p class="subtitle">Elige el sonido que quieres practicar</p>
-
-            <div class="group-title">Vocales Cortas (Short Vowels)</div>
-            <div class="grid-phonemes">
-                <div class="phoneme-card" onclick="startStudy('/ɪ/')">
-                    <div class="phoneme-symbol">/ɪ/</div>
-                    <div class="phoneme-example">hit, sit, bit</div>
-                </div>
-            </div>
+            <div id="phonemes-container"></div>
         </div>
 
         <!-- PANTALLA 2: APRENDIZAJE Y ESTUDIO -->
@@ -294,42 +287,118 @@
     </div>
 
     <script>
+        // BASE DE DATOS DE FONEMAS
+        // Para añadir nuevos sonidos en el futuro, solo agrégalos aquí especificando su categoría.
         const data = {
-            "/ɪ/": [
-                { word: "Hit", en: "Don't hit the glass with your spoon.", es: "No golpees el vaso con tu cuchara.", targetEn: "hit", targetEs: "golpees" },
-                { word: "Sit", en: "Please sit down and make yourself comfortable.", es: "Por favor, siéntate y ponte cómodo.", targetEn: "sit", targetEs: "siéntate" },
-                { word: "Bit", en: "Can I have a small bit of chocolate?", es: "¿Puedo tomar un trocito de chocolate?", targetEn: "bit", targetEs: "trocito" },
-                { word: "Kit", en: "He bought a new first-aid kit for the car.", es: "Él compró un nuevo botiquín de primeros auxilios para el coche.", targetEn: "kit", targetEs: "botiquín" },
-                { word: "Fit", en: "Regular exercise helps you stay fit.", es: "El ejercicio regular te ayuda a mantenerte en forma.", targetEn: "fit", targetEs: "en forma" },
-                { word: "Zip", en: "Make sure to zip up your jacket, it's cold.", es: "Asegúrate de subir la cremallera de tu chaqueta, hace frío.", targetEn: "zip", targetEs: "subir la cremallera" },
-                { word: "Lip", en: "She bit her lip while thinking.", es: "Ella se mordió el labio mientras pensaba.", targetEn: "lip", targetEs: "labio" },
-                { word: "Tip", en: "The waiter gave us great service, so we left a tip.", es: "El camarero nos dio un gran servicio, así que dejamos propina.", targetEn: "tip", targetEs: "propina" },
-                { word: "Pin", en: "Use a pin to hold the paper together.", es: "Usa un alfiler para mantener el papel unido.", targetEn: "pin", targetEs: "alfiler" },
-                { word: "Bin", en: "Please throw that paper in the bin.", es: "Por favor, tira ese papel a la papelera.", targetEn: "bin", targetEs: "papelera" },
-                { word: "Win", en: "We hope our team will win the match tonight.", es: "Esperamos que nuestro equipo gane el partido esta noche.", targetEn: "win", targetEs: "gane" },
-                { word: "Tin", en: "Open that tin of tuna for the salad.", es: "Abre esa lata de atún para la ensalada.", targetEn: "tin", targetEs: "lata" },
-                { word: "Sin", en: "They say telling a white lie is not a sin.", es: "Dicen que decir una mentirijida piadosa no es un pecado.", targetEn: "sin", targetEs: "pecado" },
-                { word: "Pig", en: "The farmer feeds the pig every morning.", es: "El granjero alimenta al cerdo todas las mañanas.", targetEn: "pig", targetEs: "cerdo" },
-                { word: "Dig", en: "The dog loves to dig holes in the garden.", es: "Al perro le encanta cavar hoyos en el jardín.", targetEn: "dig", targetEs: "cavar" },
-                { word: "Fig", en: "She ate a sweet fresh fig from the tree.", es: "Ella se comió un higo fresco y dulce del árbol.", targetEn: "fig", targetEs: "higo" },
-                { word: "Big", en: "They live in a very big house downtown.", es: "Ellos viven en una casa muy grande en el centro.", targetEn: "big", targetEs: "grande" },
-                { word: "Wig", en: "The actor wore a funny wig for the play.", es: "El actor llevó una peluca divertida para la obra.", targetEn: "wig", targetEs: "peluca" },
-                { word: "Ill", en: "He stayed home from work because he felt ill.", es: "Se quedó en casa sin ir a trabajar porque se sentía enfermo.", targetEn: "ill", targetEs: "enfermo" },
-                { word: "Hill", en: "They climbed up the steep hill to see the view.", es: "Subieron por la empinada colina para ver las vistas.", targetEn: "hill", targetEs: "colina" },
-                { word: "Milk", en: "I like to drink a glass of warm milk before bed.", es: "Me gusta beber un vaso de leche tibia antes de dormir.", targetEn: "milk", targetEs: "leche" },
-                { word: "Silk", en: "This dress is made of soft silk.", es: "Este vestido está hecho de seda suave.", targetEn: "silk", targetEs: "seda" },
-                { word: "Fish", en: "We saw many colorful fish while scuba diving.", es: "Vimos muchos peces de colores mientras buceábamos.", targetEn: "fish", targetEs: "peces" },
-                { word: "Dish", en: "My favorite traditional dish is paella.", es: "Mi plato tradicional favorito es la paella.", targetEn: "dish", targetEs: "plato" },
-                { word: "Wish", en: "Make a wish before blowing out the candles.", es: "Pide un deseo antes de apagar las velas.", targetEn: "wish", targetEs: "deseo" }
-            ]
+            "/ɪ/": {
+                category: "Vocales Cortas (Short Vowels)",
+                items: [
+                    { word: "Hit", en: "Don't hit the glass with your spoon.", es: "No golpees el vaso con tu cuchara.", targetEn: "hit", targetEs: "golpees" },
+                    { word: "Sit", en: "Please sit down and make yourself comfortable.", es: "Por favor, siéntate y ponte cómodo.", targetEn: "sit", targetEs: "siéntate" },
+                    { word: "Bit", en: "Can I have a small bit of chocolate?", es: "¿Puedo tomar un trocito de chocolate?", targetEn: "bit", targetEs: "trocito" },
+                    { word: "Kit", en: "He bought a new first-aid kit for the car.", es: "Él compró un nuevo botiquín de primeros auxilios para el coche.", targetEn: "kit", targetEs: "botiquín" },
+                    { word: "Fit", en: "Regular exercise helps you stay fit.", es: "El ejercicio regular te ayuda a mantenerte en forma.", targetEn: "fit", targetEs: "en forma" },
+                    { word: "Zip", en: "Make sure to zip up your jacket, it's cold.", es: "Asegúrate de subir la cremallera de tu chaqueta, hace frío.", targetEn: "zip", targetEs: "subir la cremallera" },
+                    { word: "Lip", en: "She bit her lip while thinking.", es: "Ella se mordió el labio mientras pensaba.", targetEn: "lip", targetEs: "labio" },
+                    { word: "Tip", en: "The waiter gave us great service, so we left a tip.", es: "El camarero nos dio un gran servicio, así que dejamos propina.", targetEn: "tip", targetEs: "propina" },
+                    { word: "Pin", en: "Use a pin to hold the paper together.", es: "Usa un alfiler para mantener el papel unido.", targetEn: "pin", targetEs: "alfiler" },
+                    { word: "Bin", en: "Please throw that paper in the bin.", es: "Por favor, tira ese papel a la papelera.", targetEn: "bin", targetEs: "papelera" },
+                    { word: "Win", en: "We hope our team will win the match tonight.", es: "Esperamos que nuestro equipo gane el partido esta noche.", targetEn: "win", targetEs: "gane" },
+                    { word: "Tin", en: "Open that tin of tuna for the salad.", es: "Abre esa lata de atún para la ensalada.", targetEn: "tin", targetEs: "lata" },
+                    { word: "Sin", en: "They say telling a white lie is not a sin.", es: "Dicen que decir una mentirijida piadosa no es un pecado.", targetEn: "sin", targetEs: "pecado" },
+                    { word: "Pig", en: "The farmer feeds the pig every morning.", es: "El granjero alimenta al cerdo todas las mañanas.", targetEn: "pig", targetEs: "cerdo" },
+                    { word: "Dig", en: "The dog loves to dig holes in the garden.", es: "Al perro le encanta cavar hoyos en el jardín.", targetEn: "dig", targetEs: "cavar" },
+                    { word: "Fig", en: "She ate a sweet fresh fig from the tree.", es: "Ella se comió un higo fresco y dulce del árbol.", targetEn: "fig", targetEs: "higo" },
+                    { word: "Big", en: "They live in a very big house downtown.", es: "Ellos viven en una casa muy grande en el centro.", targetEn: "big", targetEs: "grande" },
+                    { word: "Wig", en: "The actor wore a funny wig for the play.", es: "El actor llevó una peluca divertida para la obra.", targetEn: "wig", targetEs: "peluca" },
+                    { word: "Ill", en: "He stayed home from work because he felt ill.", es: "Se quedó en casa sin ir a trabajar porque se sentía enfermo.", targetEn: "ill", targetEs: "enfermo" },
+                    { word: "Hill", en: "They climbed up the steep hill to see the view.", es: "Subieron por la empinada colina para ver las vistas.", targetEn: "hill", targetEs: "colina" },
+                    { word: "Milk", en: "I like to drink a glass of warm milk before bed.", es: "Me gusta beber un vaso de leche tibia antes de dormir.", targetEn: "milk", targetEs: "leche" },
+                    { word: "Silk", en: "This dress is made of soft silk.", es: "Este vestido está hecho de seda suave.", targetEn: "silk", targetEs: "seda" },
+                    { word: "Fish", en: "We saw many colorful fish while scuba diving.", es: "Vimos muchos peces de colores mientras buceábamos.", targetEn: "fish", targetEs: "peces" },
+                    { word: "Dish", en: "My favorite traditional dish is paella.", es: "Mi plato tradicional favorito es la paella.", targetEn: "dish", targetEs: "plato" },
+                    { word: "Wish", en: "Make a wish before blowing out the candles.", es: "Pide un deseo antes de apagar las velas.", targetEn: "wish", targetEs: "deseo" }
+                ]
+            },
+            "/p/": {
+                category: "Consonantes (Consonants)",
+                items: [
+                    { word: "Pen", en: "Can I borrow your blue pen, please?", es: "¿Me prestas tu bolígrafo azul, por favor?", targetEn: "pen", targetEs: "bolígrafo" },
+                    { word: "Pig", en: "The little pink pig played in the mud.", es: "El pequeño cerdo rosado jugó en el lodo.", targetEn: "pig", targetEs: "cerdo" },
+                    { word: "Pot", en: "She is cooking soup in a large metal pot.", es: "Ella está cocinando sopa en una olla de metal grande.", targetEn: "pot", targetEs: "olla" },
+                    { word: "Pan", en: "Heat some oil in a frying pan.", es: "Calienta un poco de aceite en una sartén.", targetEn: "pan", targetEs: "sartén" },
+                    { word: "Pin", en: "Fasten the fabric with a small pin.", es: "Fija la tela con un alfiler pequeño.", targetEn: "pin", targetEs: "alfiler" },
+                    { word: "Pet", en: "They have a lovely dog as a pet.", es: "Ellos tienen un perro encantador como mascota.", targetEn: "pet", targetEs: "mascota" },
+                    { word: "Cup", en: "He poured hot tea into the white cup.", es: "Él sirvió té caliente en la taza blanca.", targetEn: "cup", targetEs: "taza" },
+                    { word: "Cap", en: "He wears a baseball cap to block the sun.", es: "Él lleva una gorra de béisbol para bloquear el sol.", targetEn: "cap", targetEs: "gorra" },
+                    { word: "Map", en: "We looked at the map to find the museum.", es: "Miramos el mapa para encontrar el museo.", targetEn: "map", targetEs: "mapa" },
+                    { word: "Mop", en: "Please clean the kitchen floor with a mop.", es: "Por favor, limpia el suelo de la cocina con una fregona.", targetEn: "mop", targetEs: "fregona" },
+                    { word: "Hop", en: "The little rabbit can hop very fast.", es: "El pequeño conejo puede dar saltitos muy rápido.", targetEn: "hop", targetEs: "saltitos" },
+                    { word: "Pop", en: "The balloon went pop with a loud noise.", es: "El globo hizo pop con un fuerte ruido.", targetEn: "pop", targetEs: "pop" },
+                    { word: "Top", en: "The cat climbed to the top of the roof.", es: "El gato subió a la parte superior del tejado.", targetEn: "top", targetEs: "parte superior" },
+                    { word: "Pond", en: "A few ducks are swimming in the pond.", es: "Unos cuantos patos están nadando en el estanque.", targetEn: "pond", targetEs: "estanque" },
+                    { word: "Pill", en: "Take this pill with a glass of water.", es: "Toma esta pastilla con un vaso de agua.", targetEn: "pill", targetEs: "pastilla" },
+                    { word: "Peer", en: "He had to peer through the foggy window.", es: "Él tuvo que mirar fijamente a través de la ventana empañada.", targetEn: "peer", targetEs: "mirar fijamente" },
+                    { word: "Pest", en: "That mosquito is a really annoying pest.", es: "Ese mosquito es una plaga realmente molesta.", targetEn: "pest", targetEs: "plaga" },
+                    { word: "Pulp", en: "Orange juice with pulp is my favorite.", es: "El zumo de naranja con pulpa es mi favorito.", targetEn: "pulp", targetEs: "pulpa" },
+                    { word: "Pump", en: "They need to pump air into the bicycle tire.", es: "Necesitan bombear aire en el neumático de la bicicleta.", targetEn: "pump", targetEs: "bombear" },
+                    { word: "Pack", en: "Don't forget to pack your suitcase for the trip.", es: "No olvides hacer tu maleta para el viaje.", targetEn: "pack", targetEs: "hacer" },
+                    { word: "Page", en: "Open your textbook to page ten.", es: "Abre tu libro de texto en la página diez.", targetEn: "page", targetEs: "página" },
+                    { word: "Pale", en: "His face looked quite pale after the shock.", es: "Su rostro se veía bastante pálido después de la impresión.", targetEn: "pale", targetEs: "pálido" },
+                    { word: "Park", en: "We love walking through the green park.", es: "Nos encanta pasear por el parque verde.", targetEn: "park", targetEs: "parque" },
+                    { word: "Past", en: "We should learn from our mistakes in the past.", es: "Debemos aprender de nuestros errores en el pasado.", targetEn: "past", targetEs: "pasado" },
+                    { word: "Path", en: "Follow this narrow path to reach the lake.", es: "Sigue este sendero estrecho para llegar al lago.", targetEn: "path", targetEs: "sendero" }
+                ]
+            }
         };
 
         let currentPhonemeList = [];
         let index = 0;
-        let currentUtterance = null; // Global variable to prevent garbage collection on mobile browsers
+        let currentUtterance = null;
+
+        // CONSTRUCCIÓN AUTOMÁTICA DE LA PANTALLA PRINCIPAL
+        function buildSelectionScreen() {
+            const container = document.getElementById('phonemes-container');
+            container.innerHTML = '';
+
+            // Agrupar fonemas por su categoría definida en los datos
+            const categories = {};
+            for (const [key, val] of Object.entries(data)) {
+                if (!categories[val.category]) {
+                    categories[val.category] = [];
+                }
+                categories[val.category].push({ key, items: val.items });
+            }
+
+            // Crear el HTML de cada grupo y sus tarjetas automáticamente
+            for (const [catName, phonemes] of Object.entries(categories)) {
+                const groupTitle = document.createElement('div');
+                groupTitle.className = 'group-title';
+                groupTitle.innerText = catName;
+                container.appendChild(groupTitle);
+
+                const grid = document.createElement('div');
+                grid.className = 'grid-phonemes';
+
+                phonemes.forEach(p => {
+                    const firstWords = p.items.slice(0, 3).map(i => i.word).join(', ');
+                    
+                    const card = document.createElement('div');
+                    card.className = 'phoneme-card';
+                    card.onclick = () => startStudy(p.key);
+                    card.innerHTML = `
+                        <div class="phoneme-symbol">${p.key}</div>
+                        <div class="phoneme-example">${firstWords}</div>
+                    `;
+                    grid.appendChild(card);
+                });
+
+                container.appendChild(grid);
+            }
+        }
 
         function startStudy(key) {
-            currentPhonemeList = data[key] || [];
+            currentPhonemeList = data[key].items || [];
             index = 0;
             document.getElementById('screen-select').classList.add('hidden');
             document.getElementById('screen-study').classList.remove('hidden');
@@ -385,80 +454,26 @@
             }
         }
 
-
-
-function playAudio(type) {
-    const synth = window.speechSynthesis;
-
-    if (!synth || typeof SpeechSynthesisUtterance === "undefined") {
-        alert("Este navegador no admite la reproducción de voz.");
-        return;
-    }
-
-    const current = currentPhonemeList[index];
-
-    if (!current) {
-        alert("No se ha encontrado la palabra o frase.");
-        return;
-    }
-
-    const textToSpeak = type === "word" ? current.word : current.en;
-
-    // Detener cualquier reproducción anterior.
-    synth.cancel();
-
-    // Esperar a que Chrome termine la cancelación.
-    setTimeout(function () {
-        const utterance = new SpeechSynthesisUtterance(textToSpeak);
-
-        utterance.lang = "en-US";
-        utterance.rate = 0.85;
-        utterance.pitch = 1;
-
-        // Buscar una voz inglesa disponible.
-        const voices = synth.getVoices();
-
-        const voice =
-            voices.find(v => v.lang.toLowerCase() === "en-us") ||
-            voices.find(v => v.lang.toLowerCase() === "en-gb") ||
-            voices.find(v => v.lang.toLowerCase().startsWith("en"));
-
-        if (voice) {
-            utterance.voice = voice;
-            utterance.lang = voice.lang;
-        }
-
-        // Conservar la referencia al audio.
-        currentUtterance = utterance;
-
-        utterance.onstart = function () {
-            console.log("La voz ha comenzado:", textToSpeak);
-        };
-
-        utterance.onend = function () {
-            console.log("La voz ha terminado.");
-        };
-
-        utterance.onerror = function (event) {
-            console.error("Error de reproducción:", event.error);
-            alert("Error de audio: " + event.error);
-        };
-
-        try {
-            synth.speak(utterance);
-
-            if (synth.paused) {
-                synth.resume();
+        function playAudio(type) {
+            if (!('speechSynthesis' in window)) {
+                alert("Speech synthesis is not supported in this browser.");
+                return;
             }
-        } catch (error) {
-            alert("No se pudo iniciar el audio: " + error.message);
-            console.error(error);
+
+            window.speechSynthesis.cancel();
+
+            const current = currentPhonemeList[index];
+            const textToSpeak = type === 'word' ? current.word : current.en;
+
+            currentUtterance = new SpeechSynthesisUtterance(textToSpeak);
+            currentUtterance.lang = 'en-US';
+            currentUtterance.rate = 0.85;
+
+            window.speechSynthesis.speak(currentUtterance);
         }
-    }, 250);
-}
 
-
-        
+        // Inicializar la pantalla al cargar la página
+        window.onload = buildSelectionScreen;
     </script>
 </body>
 </html>
