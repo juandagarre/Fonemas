@@ -1617,7 +1617,41 @@
                 { word: "Warrant", en: "Judge signed police house search warrant.", es: "El juez firmó la orden de registro de la casa de la policía.", targetEn: "warrant", targetEs: "orden" },
                 { word: "Warrior", en: "Ancient historical warrior held shield.", es: "El antiguo guerrero histórico sostenía un escudo.", targetEn: "warrior", targetEs: "guerrero" }
             ]
-        }
+        },
+
+
+
+                "/ɪ/ vs /iː/": {
+                category: "Posibles confusiones",
+                items: [
+                    { word: "Hit / Heat", en: "Don't hit the pot while keeping the heat low.", es: "No golpees la olla mientras mantienes el calor bajo.", targetEn: "hit", targetEs: "golpees" },
+                    { word: "Sit / Seat", en: "Please sit down on your assigned seat.", es: "Por favor, siéntate en tu asiento asignado.", targetEn: "sit", targetEs: "siéntate" },
+                    { word: "Bit / Beet", en: "He ate a small bit of red beet.", es: "Él comió un pequeño trozo de remolacha roja.", targetEn: "bit", targetEs: "trozo" },
+                    { word: "Fit / Feet", en: "These shoes fit my tired feet well.", es: "Estos zapatos le quedan bien a mis pies cansados.", targetEn: "fit", targetEs: "quedan" },
+                    { word: "Bin / Been", en: "Have you been throwing papers in that bin?", es: "¿Has estado tirando papeles en esa papelera?", targetEn: "bin", targetEs: "papelera" },
+                    { word: "Fill / Feel", en: "Fill the glass if you feel thirsty.", es: "Llena el vaso si te sientes sediento.", targetEn: "fill", targetEs: "Llena" },
+                    { word: "Mill / Meal", en: "They ground wheat at the mill for a meal.", es: "Molieron trigo en el molino para una comida.", targetEn: "mill", targetEs: "molino" },
+                    { word: "Still / Steal", en: "Stand still so nobody can steal it.", es: "Quédate quieto para que nadie pueda robarlo.", targetEn: "still", targetEs: "quieto" },
+                    { word: "Chip / Cheap", en: "This computer chip is very cheap.", es: "Este chip de ordenador es muy barato.", targetEn: "chip", targetEs: "chip" },
+                    { word: "Dip / Deep", en: "Dip your toes into the deep water.", es: "Moja tus dedos en el agua profunda.", targetEn: "dip", targetEs: "Moja" },
+                    { word: "Hid / Heed", en: "She hid because she didn't heed the warning.", es: "Ella se escondió porque no prestó atención a la advertencia.", targetEn: "hid", targetEs: "escondió" },
+                    { word: "Kit / Keet", en: "He brought a first-aid kit for the trip.", es: "Él trajo un botiquín de primeros auxilios para el viaje.", targetEn: "kit", targetEs: "botiquín" },
+                    { word: "Lid / Lead", en: "Put the lid on to lead the steam away.", es: "Pon la tapa para guiar el vapor.", targetEn: "lid", targetEs: "tapa" },
+                    { word: "Pick / Peak", en: "Pick the best flower at the mountain peak.", es: "Elige la mejor flor en la cima de la montaña.", targetEn: "pick", targetEs: "Elige" },
+                    { word: "Sin / Seen", en: "It is a sin that you have not seen it.", es: "Es un pecado que no lo hayas visto.", targetEn: "sin", targetEs: "pecado" },
+                    { word: "Slip / Sleep", en: "Don't slip on the floor before you sleep.", es: "No te resbales en el suelo antes de dormir.", targetEn: "slip", targetEs: "resbales" },
+                    { word: "Tin / Teen", en: "A teen opened the old metal tin.", es: "Un adolescente abrió la vieja lata de metal.", targetEn: "tin", targetEs: "lata" },
+                    { word: "Wick / Week", en: "Replace the candle wick this week.", es: "Reemplaza la mecha de la vela esta semana.", targetEn: "wick", targetEs: "mecha" },
+                    { word: "Will / Wheel", en: "He has the will to fix the car wheel.", es: "Él tiene la voluntad de arreglar la rueda del coche.", targetEn: "will", targetEs: "voluntad" },
+                    { word: "Slip / Sheep", en: "The sheep might slip on the mud.", es: "La oveja podría resbalar en el barro.", targetEn: "slip", targetEs: "resbalar" },
+                    { word: "Mill / Meal", en: "We stopped at the mill for a quick meal.", es: "Paramos en el molino para una comida rápida.", targetEn: "mill", targetEs: "molino" },
+                    { word: "Sick / Seek", en: "If you feel sick, seek medical help.", es: "Si te sientes enfermo, busca ayuda médica.", targetEn: "sick", targetEs: "enfermo" },
+                    { word: "Pill / Peel", en: "Take the pill after you peel the fruit.", es: "Toma la pastilla después de pelar la fruta.", targetEn: "pill", targetEs: "pastilla" },
+                    { word: "List / Least", en: "Make a list of the things you want least.", es: "Haz una lista de las cosas que menos quieres.", targetEn: "list", targetEs: "lista" },
+                    { word: "Grim / Greem", en: "His grim face turned green.", es: "Su rostro sombrío se puso verde.", targetEn: "grim", targetEs: "sombrío" }
+                ]
+            }
+
 
 
 
@@ -1727,7 +1761,7 @@
             }
         }
 
-        function playAudio(type) {
+        <!-- function playAudio(type) {
             if (!('speechSynthesis' in window)) {
                 alert("Speech synthesis is not supported in this browser.");
                 return;
@@ -1743,7 +1777,51 @@
             currentUtterance.rate = 0.85;
 
             window.speechSynthesis.speak(currentUtterance);
+        } -->
+
+
+
+        function playAudio(type) {
+            if (!('speechSynthesis' in window)) {
+                alert("Speech synthesis is not supported in this browser.");
+                return;
+            }
+
+            window.speechSynthesis.cancel();
+
+            const current = currentPhonemeList[index];
+            
+            if (type === 'word') {
+                // Si estamos en una categoría de confusión, 'current.word' contendrá ambas (ej: "Hit / Heat")
+                const words = current.word.split(' / ');
+                if (words.length > 1) {
+                    const utterance1 = new SpeechSynthesisUtterance(words[0]);
+                    utterance1.lang = 'en-US';
+                    utterance1.rate = 0.85;
+
+                    const utterance2 = new SpeechSynthesisUtterance(words[1]);
+                    utterance2.lang = 'en-US';
+                    utterance2.rate = 0.85;
+
+                    window.speechSynthesis.speak(utterance1);
+                    window.speechSynthesis.speak(utterance2);
+                    currentUtterance = utterance2; // Referencia global para evitar garbage collection
+                } else {
+                    currentUtterance = new SpeechSynthesisUtterance(current.word);
+                    currentUtterance.lang = 'en-US';
+                    currentUtterance.rate = 0.85;
+                    window.speechSynthesis.speak(currentUtterance);
+                }
+            } else {
+                currentUtterance = new SpeechSynthesisUtterance(current.en);
+                currentUtterance.lang = 'en-US';
+                currentUtterance.rate = 0.85;
+                window.speechSynthesis.speak(currentUtterance);
+            }
         }
+
+
+    
 
         // Inicializar la pantalla al cargar la página
         window.onload = buildSelectionScreen;
