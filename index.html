@@ -326,6 +326,7 @@
 
         let currentPhonemeList = [];
         let index = 0;
+        let activeAudio = null;
 
         function startStudy(key) {
             currentPhonemeList = data[key] || [];
@@ -336,13 +337,13 @@
         }
 
         function goBack() {
-            window.speechSynthesis.cancel();
+            stopCurrentAudio();
             document.getElementById('screen-study').classList.add('hidden');
             document.getElementById('screen-select').classList.remove('hidden');
         }
 
         function renderCard() {
-            window.speechSynthesis.cancel();
+            stopCurrentAudio();
             const current = currentPhonemeList[index];
 
             document.getElementById('counter-badge').innerText = `Frase ${index + 1} / ${currentPhonemeList.length}`;
@@ -384,37 +385,26 @@
             }
         }
 
-        // Sistema de Síntesis de Voz Nativa optimizado para móviles (sin bloqueos ni alertas)
-        function playAudio(type) {
-            if (!('speechSynthesis' in window)) {
-                alert("Tu navegador no soporta lectura por voz.");
-                return;
+        function stopCurrentAudio() {
+            if (activeAudio) {
+                activeAudio.pause();
+                activeAudio = null;
             }
+        }
 
-            window.speechSynthesis.cancel(); // Detiene cualquier audio anterior
-
+        // Reproductor basado en elementos de audio multimedia nativos (sin bloqueos de síntesis de voz)
+        function playAudio(type) {
+            stopCurrentAudio();
             const current = currentPhonemeList[index];
             const textToSpeak = type === 'word' ? current.word : current.en;
 
-            const utterance = new SpeechSynthesisUtterance(textToSpeak);
-            utterance.lang = 'en-US';
-            utterance.rate = 0.85; // Velocidad ligeramente más pausada para estudiar mejor
-
-            // Intenta buscar una voz en inglés del dispositivo de forma segura
-            const voices = window.speechSynthesis.getVoices();
-            const englishVoice = voices.find(v => v.lang === 'en-US' || v.lang === 'en-GB' || v.lang.startsWith('en'));
-            if (englishVoice) {
-                utterance.voice = englishVoice;
-            }
-
-            window.speechSynthesis.speak(utterance);
-        }
-
-        // Precargar voces para evitar retrasos en móviles
-        if ('speechSynthesis' in window) {
-            window.speechSynthesis.onvoiceschanged = () => {
-                window.speechSynthesis.getVoices();
-            };
+            // Enlace directo al servicio de locución en inglés estándar
+            const audioUrl = `https://translate.google.com/translate_tts?ie=UTF-8&q=${encodeURIComponent(textToSpeak)}&tl=en&client=tw-ob`;
+            
+            activeAudio = new Audio(audioUrl);
+            activeAudio.play().catch(err => {
+                console.log("Reproducción bloqueada o error de red:", err);
+            });
         }
     </script>
 </body>
