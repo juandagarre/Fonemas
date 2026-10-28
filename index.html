@@ -326,7 +326,7 @@
 
         let currentPhonemeList = [];
         let index = 0;
-        let audioContext = null;
+        let currentUtterance = null; // Global variable to prevent garbage collection on mobile browsers
 
         function startStudy(key) {
             currentPhonemeList = data[key] || [];
@@ -337,13 +337,13 @@
         }
 
         function goBack() {
-            stopAudio();
+            if ('speechSynthesis' in window) window.speechSynthesis.cancel();
             document.getElementById('screen-study').classList.add('hidden');
             document.getElementById('screen-select').classList.remove('hidden');
         }
 
         function renderCard() {
-            stopAudio();
+            if ('speechSynthesis' in window) window.speechSynthesis.cancel();
             const current = currentPhonemeList[index];
 
             document.getElementById('counter-badge').innerText = `Frase ${index + 1} / ${currentPhonemeList.length}`;
@@ -385,34 +385,22 @@
             }
         }
 
-        function stopAudio() {
-            if (window.speechSynthesis) {
-                window.speechSynthesis.cancel();
-            }
-        }
-
-        // MOTOR DE AUDIO HÍBRIDO NATIVO
         function playAudio(type) {
-            stopAudio();
+            if (!('speechSynthesis' in window)) {
+                alert("Speech synthesis is not supported in this browser.");
+                return;
+            }
+
+            window.speechSynthesis.cancel();
+
             const current = currentPhonemeList[index];
-            const text = type === 'word' ? current.word : current.en;
+            const textToSpeak = type === 'word' ? current.word : current.en;
 
-            // Desbloqueo del contexto de audio en móviles al pulsar
-            if (!audioContext) {
-                audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            }
-            if (audioContext.state === 'suspended') {
-                audioContext.resume();
-            }
+            currentUtterance = new SpeechSynthesisUtterance(textToSpeak);
+            currentUtterance.lang = 'en-US';
+            currentUtterance.rate = 0.85;
 
-            if ('speechSynthesis' in window) {
-                const utterance = new SpeechSynthesisUtterance(text);
-                utterance.lang = 'en-US';
-                utterance.rate = 0.85;
-
-                // Forzar el canal multimedia activo
-                window.speechSynthesis.speak(utterance);
-            }
+            window.speechSynthesis.speak(currentUtterance);
         }
     </script>
 </body>
