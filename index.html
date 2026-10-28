@@ -294,7 +294,6 @@
     </div>
 
     <script>
-        // Datos del primer sonido /ɪ/
         const data = {
             "/ɪ/": [
                 { word: "Hit", en: "Don't hit the glass with your spoon.", es: "No golpees el vaso con tu cuchara.", targetEn: "hit", targetEs: "golpees" },
@@ -327,6 +326,7 @@
 
         let currentPhonemeList = [];
         let index = 0;
+        let currentAudio = null;
 
         function startStudy(key) {
             currentPhonemeList = data[key] || [];
@@ -346,26 +346,19 @@
             stopAudio();
             const current = currentPhonemeList[index];
 
-            // Marcador
             document.getElementById('counter-badge').innerText = `Frase ${index + 1} / ${currentPhonemeList.length}`;
-            
-            // Palabra clave
             document.getElementById('target-word').innerText = current.word;
 
-            // Frase Inglés (Negrita + amarillo)
             const regexEn = new RegExp(`\\b(${current.targetEn})\\b`, 'gi');
             const htmlEn = current.en.replace(regexEn, '<span class="hl-yellow">$1</span>');
             document.getElementById('english-text').innerHTML = htmlEn;
 
-            // Frase Español (Normal + azul claro)
             const regexEs = new RegExp(`\\b(${current.targetEs})\\b`, 'gi');
             const htmlEs = current.es.replace(regexEs, '<span class="hl-blue">$1</span>');
             document.getElementById('spanish-text').innerHTML = htmlEs;
 
-            // Ocultar frase por defecto
             hideSentence();
 
-            // Estado de navegación
             document.getElementById('btn-prev').disabled = index === 0;
             document.getElementById('btn-next').disabled = index === currentPhonemeList.length - 1;
         }
@@ -392,10 +385,10 @@
             }
         }
 
-        // CONTROL DE AUDIO ROBUSTO (Móvil y Escritorio)
         function stopAudio() {
-            if ('speechSynthesis' in window) {
-                window.speechSynthesis.cancel();
+            if (currentAudio) {
+                currentAudio.pause();
+                currentAudio = null;
             }
         }
 
@@ -404,26 +397,12 @@
             const current = currentPhonemeList[index];
             const textToSpeak = type === 'word' ? current.word : current.en;
 
-            // Método 1: Web Speech API del navegador
-            if ('speechSynthesis' in window) {
-                const utterance = new SpeechSynthesisUtterance(textToSpeak);
-                utterance.lang = 'en-US';
-                utterance.rate = 0.85;
-
-                // Forzar la búsqueda de una voz en inglés disponible
-                const voices = window.speechSynthesis.getVoices();
-                const englishVoice = voices.find(v => v.lang.startsWith('en'));
-                if (englishVoice) {
-                    utterance.voice = englishVoice;
-                }
-
-                window.speechSynthesis.speak(utterance);
-            } else {
-                // Método 2: Respaldo por audio HTML5 si el navegador no tiene síntesis nativa
-                const audioUrl = `https://translate.google.com/translate_tts?ie=UTF-8&tl=en&client=tw-ob&q=${encodeURIComponent(textToSpeak)}`;
-                const audio = new Audio(audioUrl);
-                audio.play().catch(e => alert("Tu navegador bloquea el audio automático. Haz clic de nuevo."));
-            }
+            const audioUrl = `https://translate.google.com/translate_tts?ie=UTF-8&tl=en&client=tw-ob&q=${encodeURIComponent(textToSpeak)}`;
+            currentAudio = new Audio(audioUrl);
+            currentAudio.play().catch(error => {
+                console.error("Error al reproducir el audio:", error);
+                alert("Pulsa de nuevo el botón para activar el audio.");
+            });
         }
     </script>
 </body>
