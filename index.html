@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>English Phonemes Trainer</title>
+
     <style>
         :root {
             --primary-color: #2563eb;
@@ -15,14 +16,16 @@
             --accent-yellow: #fef08a;
             --accent-blue: #bfdbfe;
             --border-radius: 12px;
-            --box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+                          0 2px 4px -1px rgba(0, 0, 0, 0.06);
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont,
+                         'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
         }
 
         body {
@@ -119,6 +122,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            gap: 10px;
             margin-bottom: 20px;
         }
 
@@ -144,6 +148,7 @@
             padding: 6px 14px;
             border-radius: 20px;
             font-size: 0.95rem;
+            white-space: nowrap;
         }
 
         .card {
@@ -219,6 +224,7 @@
             align-items: center;
             justify-content: center;
             gap: 6px;
+            min-height: 46px;
         }
 
         .btn:hover {
@@ -252,209 +258,735 @@
             background-color: #cbd5e1;
             cursor: not-allowed;
         }
+
+        #speech-status {
+            text-align: center;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-top: 10px;
+            min-height: 20px;
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+
+            .container {
+                padding: 18px;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .target-word {
+                font-size: 2rem;
+            }
+
+            .header-nav {
+                flex-wrap: wrap;
+            }
+
+            .counter-badge {
+                font-size: 0.85rem;
+            }
+
+            .english-sentence {
+                font-size: 1.1rem;
+            }
+
+            .spanish-sentence {
+                font-size: 1rem;
+            }
+        }
     </style>
 </head>
+
 <body>
 
     <div class="container">
-        <!-- PANTALLA 1: SELECCIÓN DE FONEMA -->
-        <div id="selection-screen" class="screen">
-            <h1>Entrenador de Fonemas de Inglés</h1>
-            <p class="subtitle">Selecciona el sonido que deseas practicar hoy</p>
 
-            <div class="phoneme-group-title">Vocales Cortas (Short Vowels)</div>
+        <!-- PANTALLA 1: SELECCIÓN DE FONEMA -->
+
+        <div id="selection-screen" class="screen">
+
+            <h1>Entrenador de Fonemas de Inglés</h1>
+
+            <p class="subtitle">
+                Selecciona el sonido que deseas practicar hoy
+            </p>
+
+            <div class="phoneme-group-title">
+                Vocales Cortas (Short Vowels)
+            </div>
+
             <div class="phoneme-grid">
+
                 <button class="phoneme-btn" onclick="startStudy('/ɪ/')">
                     <div class="phoneme-symbol">/ɪ/</div>
                     <div class="phoneme-desc">bit, hit, sit</div>
                 </button>
+
             </div>
+
         </div>
 
-        <!-- PANTALLA 2: PANTALLA DE ESTUDIO -->
+
+        <!-- PANTALLA 2: ESTUDIO -->
+
         <div id="study-screen" class="screen hidden">
+
             <div class="header-nav">
-                <button class="back-btn" onclick="showSelectionScreen()">← Cambiar Sonido</button>
-                <div class="counter-badge" id="counter">Frase 1 / 25</div>
+
+                <button class="back-btn" onclick="showSelectionScreen()">
+                    ← Cambiar Sonido
+                </button>
+
+                <div class="counter-badge" id="counter">
+                    Frase 1 / 25
+                </div>
+
             </div>
+
 
             <div class="card">
-                <div id="target-word" class="target-word">Hit</div>
-                <div id="sentence-container" class="sentence-box hidden">
-                    <div id="english-sentence" class="english-sentence"></div>
-                    <div id="spanish-sentence" class="spanish-sentence"></div>
+
+                <div id="target-word" class="target-word">
+                    Hit
                 </div>
+
+                <div id="sentence-container" class="sentence-box hidden">
+
+                    <div id="english-sentence" class="english-sentence"></div>
+
+                    <div id="spanish-sentence" class="spanish-sentence"></div>
+
+                </div>
+
             </div>
 
-            <!-- Botones de Acción -->
+
+            <!-- BOTONES DE ACCIÓN -->
+
             <div class="controls-grid">
+
                 <button class="btn" onclick="speakWord()">
                     🔊 Escuchar Palabra
                 </button>
+
                 <button class="btn" onclick="speakSentence()">
                     🔊 Escuchar Frase
                 </button>
+
                 <button class="btn btn-secondary" onclick="showSentence()">
                     👁️ Leer Frase
                 </button>
+
                 <button class="btn btn-secondary" onclick="hideSentence()">
                     🙈 Ocultar Frase
                 </button>
+
             </div>
 
-            <!-- Botones de Navegación -->
+
+            <!-- BOTONES DE NAVEGACIÓN -->
+
             <div class="nav-buttons">
-                <button id="prev-btn" class="btn nav-btn" onclick="prevSentence()">◀ Anterior</button>
-                <button id="next-btn" class="btn nav-btn" onclick="nextSentence()">Siguiente ▶</button>
+
+                <button id="prev-btn" class="btn nav-btn" onclick="prevSentence()">
+                    ◀ Anterior
+                </button>
+
+                <button id="next-btn" class="btn nav-btn" onclick="nextSentence()">
+                    Siguiente ▶
+                </button>
+
             </div>
+
+            <div id="speech-status" role="status" aria-live="polite"></div>
+
         </div>
+
     </div>
 
+
     <script>
+        // =====================================================
+        // DATOS DE LOS FONEMAS
+        // =====================================================
+
         const phonemeData = {
             "/ɪ/": [
-                { word: "Hit", en: "Don't hit the glass with your spoon.", es: "No golpees el vaso con tu cuchara.", targetEn: "hit", targetEs: "golpees" },
-                { word: "Sit", en: "Please sit down and make yourself comfortable.", es: "Por favor, siéntate y ponte cómodo.", targetEn: "sit", targetEs: "siéntate" },
-                { word: "Bit", en: "Can I have a small bit of chocolate?", es: "¿Puedo tomar un trocito de chocolate?", targetEn: "bit", targetEs: "trocito" },
-                { word: "Kit", en: "He bought a new first-aid kit for the car.", es: "Él compró un nuevo botiquín de primeros auxilios para el coche.", targetEn: "kit", targetEs: "botiquín" },
-                { word: "Fit", en: "Regular exercise helps you stay fit.", es: "El ejercicio regular te ayuda a mantenerte en forma.", targetEn: "fit", targetEs: "en forma" },
-                { word: "Zip", en: "Make sure to zip up your jacket, it's cold.", es: "Asegúrate de subir la cremallera de tu chaqueta, hace frío.", targetEn: "zip", targetEs: "subir la cremallera" },
-                { word: "Lip", en: "She bit her lip while thinking.", es: "Ella se mordió el labio mientras pensaba.", targetEn: "lip", targetEs: "labio" },
-                { word: "Tip", en: "The waiter gave us great service, so we left a tip.", es: "El camarero nos dio un gran servicio, así que dejamos propina.", targetEn: "tip", targetEs: "propina" },
-                { word: "Pin", en: "Use a pin to hold the paper together.", es: "Usa un alfiler para mantener el papel unido.", targetEn: "pin", targetEs: "alfiler" },
-                { word: "Bin", en: "Please throw that paper in the bin.", es: "Por favor, tira ese papel a la papelera.", targetEn: "bin", targetEs: "papelera" },
-                { word: "Win", en: "We hope our team will win the match tonight.", es: "Esperamos que nuestro equipo gane el partido esta noche.", targetEn: "win", targetEs: "gane" },
-                { word: "Tin", en: "Open that tin of tuna for the salad.", es: "Abre esa lata de atún para la ensalada.", targetEn: "tin", targetEs: "lata" },
-                { word: "Sin", en: "They say telling a white lie is not a sin.", es: "Dicen que decir una mentirijida piadosa no es un pecado.", targetEn: "sin", targetEs: "pecado" },
-                { word: "Pig", en: "The farmer feeds the pig every morning.", es: "El granjero alimenta al cerdo todas las mañanas.", targetEn: "pig", targetEs: "cerdo" },
-                { word: "Dig", en: "The dog loves to dig holes in the garden.", es: "Al perro le encanta cavar hoyos en el jardín.", targetEn: "dig", targetEs: "cavar" },
-                { word: "Fig", en: "She ate a sweet fresh fig from the tree.", es: "Ella se comió un higo fresco y dulce del árbol.", targetEn: "fig", targetEs: "higo" },
-                { word: "Big", en: "They live in a very big house downtown.", es: "Ellos viven en una casa muy grande en el centro.", targetEn: "big", targetEs: "grande" },
-                { word: "Wig", en: "The actor wore a funny wig for the play.", es: "El actor llevó una peluca divertida para la obra.", targetEn: "wig", targetEs: "peluca" },
-                { word: "Ill", en: "He stayed home from work because he felt ill.", es: "Se quedó en casa sin ir a trabajar porque se sentía enfermo.", targetEn: "ill", targetEs: "enfermo" },
-                { word: "Hill", en: "They climbed up the steep hill to see the view.", es: "Subieron por la empinada colina para ver las vistas.", targetEn: "hill", targetEs: "colina" },
-                { word: "Milk", en: "I like to drink a glass of warm milk before bed.", es: "Me gusta beber un vaso de leche tibia antes de dormir.", targetEn: "milk", targetEs: "leche" },
-                { word: "Silk", en: "This dress is made of soft silk.", es: "Este vestido está hecho de seda suave.", targetEn: "silk", targetEs: "seda" },
-                { word: "Fish", en: "We saw many colorful fish while scuba diving.", es: "Vimos muchos peces de colores mientras buceábamos.", targetEn: "fish", targetEs: "peces" },
-                { word: "Dish", en: "My favorite traditional dish is paella.", es: "Mi plato tradicional favorito es la paella.", targetEn: "dish", targetEs: "plato" },
-                { word: "Wish", en: "Make a wish before blowing out the candles.", es: "Pide un deseo antes de apagar las velas.", targetEn: "wish", targetEs: "deseo" }
+                {
+                    word: "Hit",
+                    en: "Don't hit the glass with your spoon.",
+                    es: "No golpees el vaso con tu cuchara.",
+                    targetEn: "hit",
+                    targetEs: "golpees"
+                },
+                {
+                    word: "Sit",
+                    en: "Please sit down and make yourself comfortable.",
+                    es: "Por favor, siéntate y ponte cómodo.",
+                    targetEn: "sit",
+                    targetEs: "siéntate"
+                },
+                {
+                    word: "Bit",
+                    en: "Can I have a small bit of chocolate?",
+                    es: "¿Puedo tomar un trocito de chocolate?",
+                    targetEn: "bit",
+                    targetEs: "trocito"
+                },
+                {
+                    word: "Kit",
+                    en: "He bought a new first-aid kit for the car.",
+                    es: "Él compró un nuevo botiquín de primeros auxilios para el coche.",
+                    targetEn: "kit",
+                    targetEs: "botiquín"
+                },
+                {
+                    word: "Fit",
+                    en: "Regular exercise helps you stay fit.",
+                    es: "El ejercicio regular te ayuda a mantenerte en forma.",
+                    targetEn: "fit",
+                    targetEs: "en forma"
+                },
+                {
+                    word: "Zip",
+                    en: "Make sure to zip up your jacket, it's cold.",
+                    es: "Asegúrate de subir la cremallera de tu chaqueta, hace frío.",
+                    targetEn: "zip",
+                    targetEs: "subir la cremallera"
+                },
+                {
+                    word: "Lip",
+                    en: "She bit her lip while thinking.",
+                    es: "Ella se mordió el labio mientras pensaba.",
+                    targetEn: "lip",
+                    targetEs: "labio"
+                },
+                {
+                    word: "Tip",
+                    en: "The waiter gave us great service, so we left a tip.",
+                    es: "El camarero nos dio un gran servicio, así que dejamos propina.",
+                    targetEn: "tip",
+                    targetEs: "propina"
+                },
+                {
+                    word: "Pin",
+                    en: "Use a pin to hold the paper together.",
+                    es: "Usa un alfiler para mantener el papel unido.",
+                    targetEn: "pin",
+                    targetEs: "alfiler"
+                },
+                {
+                    word: "Bin",
+                    en: "Please throw that paper in the bin.",
+                    es: "Por favor, tira ese papel a la papelera.",
+                    targetEn: "bin",
+                    targetEs: "papelera"
+                },
+                {
+                    word: "Win",
+                    en: "We hope our team will win the match tonight.",
+                    es: "Esperamos que nuestro equipo gane el partido esta noche.",
+                    targetEn: "win",
+                    targetEs: "gane"
+                },
+                {
+                    word: "Tin",
+                    en: "Open that tin of tuna for the salad.",
+                    es: "Abre esa lata de atún para la ensalada.",
+                    targetEn: "tin",
+                    targetEs: "lata"
+                },
+                {
+                    word: "Sin",
+                    en: "They say telling a white lie is not a sin.",
+                    es: "Dicen que decir una mentira piadosa no es un pecado.",
+                    targetEn: "sin",
+                    targetEs: "pecado"
+                },
+                {
+                    word: "Pig",
+                    en: "The farmer feeds the pig every morning.",
+                    es: "El granjero alimenta al cerdo todas las mañanas.",
+                    targetEn: "pig",
+                    targetEs: "cerdo"
+                },
+                {
+                    word: "Dig",
+                    en: "The dog loves to dig holes in the garden.",
+                    es: "Al perro le encanta cavar hoyos en el jardín.",
+                    targetEn: "dig",
+                    targetEs: "cavar"
+                },
+                {
+                    word: "Fig",
+                    en: "She ate a sweet fresh fig from the tree.",
+                    es: "Ella se comió un higo fresco y dulce del árbol.",
+                    targetEn: "fig",
+                    targetEs: "higo"
+                },
+                {
+                    word: "Big",
+                    en: "They live in a very big house downtown.",
+                    es: "Ellos viven en una casa muy grande en el centro.",
+                    targetEn: "big",
+                    targetEs: "grande"
+                },
+                {
+                    word: "Wig",
+                    en: "The actor wore a funny wig for the play.",
+                    es: "El actor llevó una peluca divertida para la obra.",
+                    targetEn: "wig",
+                    targetEs: "peluca"
+                },
+                {
+                    word: "Ill",
+                    en: "He stayed home from work because he felt ill.",
+                    es: "Se quedó en casa sin ir a trabajar porque se sentía enfermo.",
+                    targetEn: "ill",
+                    targetEs: "enfermo"
+                },
+                {
+                    word: "Hill",
+                    en: "They climbed up the steep hill to see the view.",
+                    es: "Subieron por la empinada colina para ver las vistas.",
+                    targetEn: "hill",
+                    targetEs: "colina"
+                },
+                {
+                    word: "Milk",
+                    en: "I like to drink a glass of warm milk before bed.",
+                    es: "Me gusta beber un vaso de leche tibia antes de dormir.",
+                    targetEn: "milk",
+                    targetEs: "leche"
+                },
+                {
+                    word: "Silk",
+                    en: "This dress is made of soft silk.",
+                    es: "Este vestido está hecho de seda suave.",
+                    targetEn: "silk",
+                    targetEs: "seda"
+                },
+                {
+                    word: "Fish",
+                    en: "We saw many colorful fish while scuba diving.",
+                    es: "Vimos muchos peces de colores mientras buceábamos.",
+                    targetEn: "fish",
+                    targetEs: "peces"
+                },
+                {
+                    word: "Dish",
+                    en: "My favorite traditional dish is paella.",
+                    es: "Mi plato tradicional favorito es la paella.",
+                    targetEn: "dish",
+                    targetEs: "plato"
+                },
+                {
+                    word: "Wish",
+                    en: "Make a wish before blowing out the candles.",
+                    es: "Pide un deseo antes de apagar las velas.",
+                    targetEn: "wish",
+                    targetEs: "deseo"
+                }
             ]
         };
+
+
+        // =====================================================
+        // VARIABLES
+        // =====================================================
 
         let currentList = [];
         let currentIndex = 0;
         let englishVoice = null;
+        let speechRequestId = 0;
 
-        // Carga explicita de voces del sistema
+
+        // =====================================================
+        // COMPROBAR SOPORTE DE VOZ
+        // =====================================================
+
+        function speechSupported() {
+            return (
+                "speechSynthesis" in window &&
+                "SpeechSynthesisUtterance" in window
+            );
+        }
+
+
+        // =====================================================
+        // BUSCAR VOCES INGLESAS
+        // =====================================================
+
         function initVoices() {
-            if (!('speechSynthesis' in window)) {
-                alert("Tu navegador no soporta la lectura por voz.");
+            if (!speechSupported()) {
                 return;
             }
 
             const voices = window.speechSynthesis.getVoices();
-            // Buscar una voz nativa en inglés (EE.UU. o Reino Unido)
-            englishVoice = voices.find(v => v.lang === 'en-US' || v.lang === 'en-GB' || v.lang.startsWith('en'));
+
+            if (!voices || voices.length === 0) {
+                englishVoice = null;
+                return;
+            }
+
+            // Prioridad:
+            // 1. Inglés de Estados Unidos.
+            // 2. Inglés británico.
+            // 3. Cualquier otra voz inglesa.
+
+            englishVoice =
+                voices.find(v => v.lang.toLowerCase() === "en-us") ||
+                voices.find(v => v.lang.toLowerCase() === "en-gb") ||
+                voices.find(v => v.lang.toLowerCase().startsWith("en-")) ||
+                voices.find(v => v.lang.toLowerCase().startsWith("en")) ||
+                null;
         }
 
-        if ('speechSynthesis' in window) {
+
+        // Cargar las voces cuando el navegador las facilite.
+
+        if (speechSupported()) {
             window.speechSynthesis.onvoiceschanged = initVoices;
             initVoices();
         }
 
+
+        // =====================================================
+        // REPRODUCCIÓN DE VOZ
+        // =====================================================
+
         function speakText(text, rate = 0.85) {
-            if (!('speechSynthesis' in window)) return;
 
-            window.speechSynthesis.cancel(); // Cancelar audios anteriores
+            const status = document.getElementById("speech-status");
 
-            const utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = 'en-US';
-            utterance.rate = rate;
+            if (!speechSupported()) {
+                if (status) {
+                    status.textContent =
+                        "Este navegador no admite la lectura por voz.";
+                }
 
-            // Asignar voz específica si se ha encontrado alguna
-            if (!englishVoice) {
+                alert(
+                    "Tu navegador no admite la lectura por voz. " +
+                    "Prueba a abrir la aplicación en Google Chrome."
+                );
+
+                return;
+            }
+
+            if (!text || !String(text).trim()) {
+                if (status) {
+                    status.textContent = "No hay texto para reproducir.";
+                }
+
+                return;
+            }
+
+            const synth = window.speechSynthesis;
+            const requestId = ++speechRequestId;
+
+            // Detener cualquier reproducción anterior.
+
+            synth.cancel();
+
+            if (status) {
+                status.textContent = "Preparando audio...";
+            }
+
+            // Pequeña pausa para permitir que Android procese
+            // la cancelación de la reproducción anterior.
+
+            setTimeout(function () {
+
+                // Si se ha pulsado otro botón mientras esperábamos,
+                // descartamos esta petición.
+
+                if (requestId !== speechRequestId) {
+                    return;
+                }
+
                 initVoices();
-            }
-            if (englishVoice) {
-                utterance.voice = englishVoice;
-            }
 
-            window.speechSynthesis.speak(utterance);
+                const utterance = new SpeechSynthesisUtterance(
+                    String(text)
+                );
+
+                utterance.rate = rate;
+                utterance.pitch = 1;
+
+                // Usar la voz inglesa encontrada, si existe.
+
+                if (englishVoice) {
+                    utterance.voice = englishVoice;
+                    utterance.lang = englishVoice.lang;
+                } else {
+                    utterance.lang = "en-US";
+                }
+
+                utterance.onstart = function () {
+                    if (requestId === speechRequestId && status) {
+                        status.textContent = "Reproduciendo audio...";
+                    }
+                };
+
+                utterance.onend = function () {
+                    if (requestId === speechRequestId && status) {
+                        status.textContent = "Audio terminado.";
+                    }
+                };
+
+                utterance.onerror = function (event) {
+
+                    if (requestId !== speechRequestId) {
+                        return;
+                    }
+
+                    console.error(
+                        "Error en la síntesis de voz:",
+                        event.error
+                    );
+
+                    if (status) {
+                        status.textContent =
+                            "Error de audio: " + event.error;
+                    }
+
+                    // No mostrar avisos cuando la reproducción
+                    // se cancela o se interrumpe deliberadamente.
+
+                    if (
+                        event.error !== "canceled" &&
+                        event.error !== "interrupted"
+                    ) {
+                        console.error(
+                            "Comprueba el motor de voz de Android."
+                        );
+                    }
+                };
+
+                try {
+
+                    // Iniciar la reproducción.
+
+                    synth.speak(utterance);
+
+                    // En algunos navegadores, esta comprobación
+                    // ayuda a detectar que no se ha iniciado.
+
+                    setTimeout(function () {
+
+                        if (
+                            requestId === speechRequestId &&
+                            synth.paused
+                        ) {
+                            synth.resume();
+                        }
+
+                    }, 300);
+
+                } catch (error) {
+
+                    console.error(
+                        "No se pudo iniciar la reproducción:",
+                        error
+                    );
+
+                    if (status) {
+                        status.textContent =
+                            "No se ha podido iniciar el audio.";
+                    }
+                }
+
+            }, 120);
         }
 
+
+        // =====================================================
+        // INICIAR ESTUDIO
+        // =====================================================
+
         function startStudy(phonemeKey) {
+
             currentList = phonemeData[phonemeKey] || [];
             currentIndex = 0;
-            if (currentList.length === 0) return;
 
-            document.getElementById('selection-screen').classList.add('hidden');
-            document.getElementById('study-screen').classList.remove('hidden');
-            
+            if (currentList.length === 0) {
+                return;
+            }
+
+            document
+                .getElementById("selection-screen")
+                .classList.add("hidden");
+
+            document
+                .getElementById("study-screen")
+                .classList.remove("hidden");
+
             loadCardData();
         }
 
+
+        // =====================================================
+        // VOLVER A SELECCIÓN
+        // =====================================================
+
         function showSelectionScreen() {
-            if ('speechSynthesis' in window) window.speechSynthesis.cancel();
-            document.getElementById('study-screen').classList.add('hidden');
-            document.getElementById('selection-screen').classList.remove('hidden');
+
+            if (speechSupported()) {
+                ++speechRequestId;
+                window.speechSynthesis.cancel();
+            }
+
+            document
+                .getElementById("study-screen")
+                .classList.add("hidden");
+
+            document
+                .getElementById("selection-screen")
+                .classList.remove("hidden");
+
+            document.getElementById("speech-status").textContent = "";
         }
 
+
+        // =====================================================
+        // CARGAR PALABRA Y FRASES
+        // =====================================================
+
         function loadCardData() {
-            if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+
+            if (speechSupported()) {
+                ++speechRequestId;
+                window.speechSynthesis.cancel();
+            }
+
+            if (
+                !currentList.length ||
+                currentIndex < 0 ||
+                currentIndex >= currentList.length
+            ) {
+                return;
+            }
+
             const item = currentList[currentIndex];
-            
-            document.getElementById('counter').innerText = `Frase ${currentIndex + 1} / ${currentList.length}`;
-            document.getElementById('target-word').innerText = item.word;
-            
+
+            document.getElementById("counter").innerText =
+                `Frase ${currentIndex + 1} / ${currentList.length}`;
+
+            document.getElementById("target-word").innerText =
+                item.word;
+
             const highlightedEn = item.en.replace(
-                new RegExp(`\\b(${item.targetEn})\\b`, 'gi'), 
+                new RegExp(`\\b(${item.targetEn})\\b`, "gi"),
                 '<span class="hl-en">$1</span>'
             );
-            document.getElementById('english-sentence').innerHTML = highlightedEn;
+
+            document.getElementById("english-sentence").innerHTML =
+                highlightedEn;
 
             const highlightedEs = item.es.replace(
-                new RegExp(`\\b(${item.targetEs})\\b`, 'gi'), 
+                new RegExp(`\\b(${item.targetEs})\\b`, "gi"),
                 '<span class="hl-es">$1</span>'
             );
-            document.getElementById('spanish-sentence').innerHTML = highlightedEs;
+
+            document.getElementById("spanish-sentence").innerHTML =
+                highlightedEs;
 
             hideSentence();
 
-            document.getElementById('prev-btn').disabled = currentIndex === 0;
-            document.getElementById('next-btn').disabled = currentIndex === currentList.length - 1;
+            document.getElementById("prev-btn").disabled =
+                currentIndex === 0;
+
+            document.getElementById("next-btn").disabled =
+                currentIndex === currentList.length - 1;
+
+            document.getElementById("speech-status").textContent = "";
         }
+
+
+        // =====================================================
+        // MOSTRAR Y OCULTAR FRASE
+        // =====================================================
 
         function showSentence() {
-            document.getElementById('sentence-container').classList.remove('hidden');
+
+            document
+                .getElementById("sentence-container")
+                .classList.remove("hidden");
         }
+
 
         function hideSentence() {
-            document.getElementById('sentence-container').classList.add('hidden');
+
+            document
+                .getElementById("sentence-container")
+                .classList.add("hidden");
         }
 
+
+        // =====================================================
+        // NAVEGACIÓN ENTRE FRASES
+        // =====================================================
+
         function nextSentence() {
+
             if (currentIndex < currentList.length - 1) {
                 currentIndex++;
                 loadCardData();
             }
         }
 
+
         function prevSentence() {
+
             if (currentIndex > 0) {
                 currentIndex--;
                 loadCardData();
             }
         }
 
+
+        // =====================================================
+        // BOTÓN: ESCUCHAR PALABRA
+        // =====================================================
+
         function speakWord() {
-            const text = currentList[currentIndex].word;
-            speakText(text, 0.85);
+
+            if (!currentList.length) {
+                return;
+            }
+
+            const item = currentList[currentIndex];
+
+            if (item) {
+                speakText(item.word, 0.85);
+            }
         }
 
+
+        // =====================================================
+        // BOTÓN: ESCUCHAR FRASE
+        // =====================================================
+
         function speakSentence() {
-            const text = currentList[currentIndex].en;
-            speakText(text, 0.9);
+
+            if (!currentList.length) {
+                return;
+            }
+
+            const item = currentList[currentIndex];
+
+            if (item) {
+                speakText(item.en, 0.9);
+            }
         }
+
     </script>
+
 </body>
 </html>
