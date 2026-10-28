@@ -661,149 +661,55 @@
         // REPRODUCCIÓN DE VOZ
         // =====================================================
 
-        function speakText(text, rate = 0.85) {
+        function speakText(text) {
+    const synth = window.speechSynthesis;
 
-            const status = document.getElementById("speech-status");
+    if (!synth) {
+        document.getElementById("speech-status").textContent =
+            "Este navegador no admite la síntesis de voz.";
+        return;
+    }
 
-            if (!speechSupported()) {
-                if (status) {
-                    status.textContent =
-                        "Este navegador no admite la lectura por voz.";
-                }
+    // Cancelar cualquier reproducción anterior
+    synth.cancel();
 
-                alert(
-                    "Tu navegador no admite la lectura por voz. " +
-                    "Prueba a abrir la aplicación en Google Chrome."
-                );
+    const utterance = new SpeechSynthesisUtterance(text);
 
-                return;
-            }
+    // Pedir inglés y dejar que Android elija la voz disponible
+    utterance.lang = "en-US";
+    utterance.rate = 0.85;
+    utterance.pitch = 1;
 
-            if (!text || !String(text).trim()) {
-                if (status) {
-                    status.textContent = "No hay texto para reproducir.";
-                }
+    utterance.onstart = function () {
+        document.getElementById("speech-status").textContent =
+            "Reproduciendo audio...";
+    };
 
-                return;
-            }
+    utterance.onend = function () {
+        document.getElementById("speech-status").textContent =
+            "Audio terminado.";
+    };
 
-            const synth = window.speechSynthesis;
-            const requestId = ++speechRequestId;
+    utterance.onerror = function (event) {
+        document.getElementById("speech-status").textContent =
+            "Error de audio: " + event.error;
+        console.error("Error de síntesis de voz:", event);
+    };
 
-            // Detener cualquier reproducción anterior.
-
-            synth.cancel();
-
-            if (status) {
-                status.textContent = "Preparando audio...";
-            }
-
-            // Pequeña pausa para permitir que Android procese
-            // la cancelación de la reproducción anterior.
-
-            setTimeout(function () {
-
-                // Si se ha pulsado otro botón mientras esperábamos,
-                // descartamos esta petición.
-
-                if (requestId !== speechRequestId) {
-                    return;
-                }
-
-                initVoices();
-
-                const utterance = new SpeechSynthesisUtterance(
-                    String(text)
-                );
-
-                utterance.rate = rate;
-                utterance.pitch = 1;
-
-                // Usar la voz inglesa encontrada, si existe.
-
-                if (englishVoice) {
-                    utterance.voice = englishVoice;
-                    utterance.lang = englishVoice.lang;
-                } else {
-                    utterance.lang = "en-US";
-                }
-
-                utterance.onstart = function () {
-                    if (requestId === speechRequestId && status) {
-                        status.textContent = "Reproduciendo audio...";
-                    }
-                };
-
-                utterance.onend = function () {
-                    if (requestId === speechRequestId && status) {
-                        status.textContent = "Audio terminado.";
-                    }
-                };
-
-                utterance.onerror = function (event) {
-
-                    if (requestId !== speechRequestId) {
-                        return;
-                    }
-
-                    console.error(
-                        "Error en la síntesis de voz:",
-                        event.error
-                    );
-
-                    if (status) {
-                        status.textContent =
-                            "Error de audio: " + event.error;
-                    }
-
-                    // No mostrar avisos cuando la reproducción
-                    // se cancela o se interrumpe deliberadamente.
-
-                    if (
-                        event.error !== "canceled" &&
-                        event.error !== "interrupted"
-                    ) {
-                        console.error(
-                            "Comprueba el motor de voz de Android."
-                        );
-                    }
-                };
-
-                try {
-
-                    // Iniciar la reproducción.
-
-                    synth.speak(utterance);
-
-                    // En algunos navegadores, esta comprobación
-                    // ayuda a detectar que no se ha iniciado.
-
-                    setTimeout(function () {
-
-                        if (
-                            requestId === speechRequestId &&
-                            synth.paused
-                        ) {
-                            synth.resume();
-                        }
-
-                    }, 300);
-
-                } catch (error) {
-
-                    console.error(
-                        "No se pudo iniciar la reproducción:",
-                        error
-                    );
-
-                    if (status) {
-                        status.textContent =
-                            "No se ha podido iniciar el audio.";
-                    }
-                }
-
-            }, 120);
+    // Dar tiempo a Android para cancelar el audio anterior
+    setTimeout(function () {
+        try {
+            synth.speak(utterance);
+        } catch (error) {
+            document.getElementById("speech-status").textContent =
+                "No se pudo iniciar el audio: " + error.message;
+            console.error(error);
         }
+    }, 300);
+}
+
+                
+                
 
 
         // =====================================================
