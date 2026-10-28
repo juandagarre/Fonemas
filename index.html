@@ -385,23 +385,80 @@
             }
         }
 
-        function playAudio(type) {
-            if (!('speechSynthesis' in window)) {
-                alert("Speech synthesis is not supported in this browser.");
-                return;
-            }
 
-            window.speechSynthesis.cancel();
 
-            const current = currentPhonemeList[index];
-            const textToSpeak = type === 'word' ? current.word : current.en;
+function playAudio(type) {
+    const synth = window.speechSynthesis;
 
-            currentUtterance = new SpeechSynthesisUtterance(textToSpeak);
-            currentUtterance.lang = 'en-US';
-            currentUtterance.rate = 0.85;
+    if (!synth || typeof SpeechSynthesisUtterance === "undefined") {
+        alert("Este navegador no admite la reproducción de voz.");
+        return;
+    }
 
-            window.speechSynthesis.speak(currentUtterance);
+    const current = currentPhonemeList[index];
+
+    if (!current) {
+        alert("No se ha encontrado la palabra o frase.");
+        return;
+    }
+
+    const textToSpeak = type === "word" ? current.word : current.en;
+
+    // Detener cualquier reproducción anterior.
+    synth.cancel();
+
+    // Esperar a que Chrome termine la cancelación.
+    setTimeout(function () {
+        const utterance = new SpeechSynthesisUtterance(textToSpeak);
+
+        utterance.lang = "en-US";
+        utterance.rate = 0.85;
+        utterance.pitch = 1;
+
+        // Buscar una voz inglesa disponible.
+        const voices = synth.getVoices();
+
+        const voice =
+            voices.find(v => v.lang.toLowerCase() === "en-us") ||
+            voices.find(v => v.lang.toLowerCase() === "en-gb") ||
+            voices.find(v => v.lang.toLowerCase().startsWith("en"));
+
+        if (voice) {
+            utterance.voice = voice;
+            utterance.lang = voice.lang;
         }
+
+        // Conservar la referencia al audio.
+        currentUtterance = utterance;
+
+        utterance.onstart = function () {
+            console.log("La voz ha comenzado:", textToSpeak);
+        };
+
+        utterance.onend = function () {
+            console.log("La voz ha terminado.");
+        };
+
+        utterance.onerror = function (event) {
+            console.error("Error de reproducción:", event.error);
+            alert("Error de audio: " + event.error);
+        };
+
+        try {
+            synth.speak(utterance);
+
+            if (synth.paused) {
+                synth.resume();
+            }
+        } catch (error) {
+            alert("No se pudo iniciar el audio: " + error.message);
+            console.error(error);
+        }
+    }, 250);
+}
+
+
+        
     </script>
 </body>
 </html>
