@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estudio de Fonemas en Inglés</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --text: #0f172a;
+            --muted: #64748b;
+            --yellow-hl: #fef08a;
+            --blue-hl: #bfdbfe;
+            --red-hl: #fecaca;
+            --radius: 12px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 16px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 700px;
+            background: var(--card);
+            border-radius: var(--radius);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+            padding: 24px;
+            min-height: 500px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .screen {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        h1 {
+            font-size: 1.6rem;
+            color: var(--primary);
+            text-align: center;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: var(--muted);
+            margin-bottom: 24px;
+            font-size: 0.95rem;
+        }
+
+        /* Selector de Sonido */
+        .group-title {
+            font-weight: bold;
+            color: #334155;
+            margin: 16px 0 8px 0;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 4px;
+        }
+
+        .grid-phonemes {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            gap: 12px;
+        }
+
+        .phoneme-card {
+            background: #f1f5f9;
+            border: 2px solid #cbd5e1;
+            border-radius: var(--radius);
+            padding: 16px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s;
+        }
+
+        .phoneme-card:hover {
+            border-color: var(--primary);
+            background: #eff6ff;
+            transform: translateY(-2px);
+        }
+
+        .phoneme-symbol {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .phoneme-example {
+            font-size: 0.85rem;
+            color: var(--muted);
+            margin-top: 4px;
+        }
+
+        /* Pantalla de Estudio */
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .btn-back {
+            background: #e2e8f0;
+            color: var(--text);
+            border: none;
+            padding: 8px 14px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .counter {
+            background: #dbeafe;
+            color: var(--primary);
+            font-weight: bold;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+
+        .main-card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: var(--radius);
+            padding: 24px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            margin-bottom: 20px;
+            min-height: 220px;
+        }
+
+        .word-title {
+            font-size: 2.3rem;
+            font-weight: bold;
+            color: var(--primary);
+            margin-bottom: 4px;
+        }
+
+        /* Transcripción fonética y sombreado en rojo suave */
+        .ipa-transcript {
+            font-size: 1.15rem;
+            color: #475569;
+            margin-bottom: 12px;
+            font-family: monospace;
+        }
+
+        .ipa-hl {
+            background-color: var(--red-hl);
+            padding: 2px 5px;
+            border-radius: 4px;
+            color: #b91c1c;
+            font-weight: bold;
+        }
+
+        /* Área de explicación */
+        .explanation-wrapper {
+            margin-top: 14px;
+            padding: 12px;
+            background: #fffbeb;
+            border: 1px solid #fde68a;
+            border-radius: 8px;
+            text-align: left;
+            font-size: 0.95rem;
+            color: #92400e;
+            line-height: 1.4;
+            width: 100%;
+        }
+
+        .sentences-wrapper {
+            margin-top: 16px;
+            width: 100%;
+        }
+
+        .en-text {
+            font-size: 1.25rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+
+        .es-text {
+            font-size: 1.05rem;
+            font-weight: normal;
+            color: #475569;
+            line-height: 1.4;
+        }
+
+        /* Resaltados */
+        .hl-yellow {
+            background-color: var(--yellow-hl);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        .hl-blue {
+            background-color: var(--blue-hl);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        /* Botones de Acción */
+        .action-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .btn:hover {
+            background: var(--primary-hover);
+        }
+
+        .btn-sec {
+            background: #64748b;
+        }
+
+        .btn-sec:hover {
+            background: #475569;
+        }
+
+        .btn-accent {
+            background: #d97706;
+        }
+
+        .btn-accent:hover {
+            background: #b45309;
+        }
+
+        /* Navegación Frases */
+        .nav-grid {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-nav {
+            flex: 1;
+            background: #0f172a;
+        }
+
+        .btn-nav:disabled {
+            background: #cbd5e1;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- PANTALLA 1: ELECCIÓN DE SONIDO -->
+        <div id="screen-select" class="screen">
+            <h1>Práctica de Fonemas</h1>
+            <p class="subtitle">Elige el sonido que quieres practicar</p>
+            <div id="phonemes-container"></div>
+        </div>
+
+        <!-- PANTALLA 2: APRENDIZAJE Y ESTUDIO -->
+        <div id="screen-study" class="screen hidden">
+            <div class="top-bar">
+                <button class="btn-back" onclick="goBack()">← Volver</button>
+                <div id="counter-badge" class="counter">Frase 1 / 35</div>
+            </div>
+
+            <div class="main-card">
+                <div id="target-word" class="word-title">Hit</div>
+                <!-- Transcripción fonética -->
+                <div id="ipa-transcript" class="ipa-transcript">/ <span class="ipa-hl">ɪ</span> /</div>
+                
+                <!-- Área de explicación articulatoria -->
+                <div id="explanation-area" class="explanation-wrapper hidden"></div>
+
+                <!-- Área de frases -->
+                <div id="sentence-area" class="sentences-wrapper hidden">
+                    <div id="english-text" class="en-text"></div>
+                    <div id="spanish-text" class="es-text"></div>
+                </div>
+            </div>
+
+            <!-- Botones principales -->
+            <div class="action-grid">
+                <button class="btn" onclick="playAudio('word')">🔊 Escuchar Palabra</button>
+                <button class="btn" onclick="playAudio('sentence')">🔊 Escuchar Frase</button>
+                <button class="btn btn-sec" onclick="showSentence()">👁️ Leer Frase</button>
+                <button class="btn btn-sec" onclick="hideSentence()">🙈 Ocultar Frase</button>
+                <button class="btn btn-accent" onclick="showExplanation()">💡 Explicación</button>
+                <button class="btn btn-accent" onclick="hideExplanation()">🙈 Ocultar Exp.</button>
+            </div>
+
+            <!-- Botones de frase anterior / siguiente -->
+            <div class="nav-grid">
+                <button id="btn-prev" class="btn btn-nav" onclick="prevSentence()">◀ Frase Anterior</button>
+                <button id="btn-next" class="btn btn-nav" onclick="nextSentence()">Frase Siguiente ▶</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // BASE DE DATOS ACTUALIZADA CON 35 FRASES (25 iniciales + 10 palabras más largas)
+        const data = {
+            "/ɪ/": {
+                category: "Vocales Cortas (Short Vowels)",
+                ipa: "/ <span class='ipa-hl'>ɪ</span> /",
+                explanation: "<strong>Posición de la boca y lengua:</strong> Relaja la boca. La lengua se sitúa en una posición intermedia-alta, ligeramente más atrás que en la 'i' del español. Los labios no se estiran hacia los lados.",
+                items: [
+                    // 25 palabras base iniciales
+                    { word: "Hit", en: "Don't hit the glass with your spoon.", es: "No golpees el vaso con tu cuchara.", targetEn: "hit", targetEs: "golpees" },
+                    { word: "Sit", en: "Please sit down and make yourself comfortable.", es: "Por favor, siéntate y ponte cómodo.", targetEn: "sit", targetEs: "siéntate" },
+                    { word: "Bit", en: "Can I have a small bit of chocolate?", es: "¿Puedo tomar un trocito de chocolate?", targetEn: "bit", targetEs: "trocito" },
+                    { word: "Kit", en: "He bought a new first-aid kit for the car.", es: "Él compró un nuevo botiquín de primeros auxilios para el coche.", targetEn: "kit", targetEs: "botiquín" },
+                    { word: "Fit", en: "Regular exercise helps you stay fit.", es: "El ejercicio regular te ayuda a mantenerte en forma.", targetEn: "fit", targetEs: "en forma" },
+                    { word: "Zip", en: "Make sure to zip up your jacket, it's cold.", es: "Asegúrate de subir la cremallera de tu chaqueta, hace frío.", targetEn: "zip", targetEs: "subir la cremallera" },
+                    { word: "Lip", en: "She bit her lip while thinking.", es: "Ella se mordió el labio mientras pensaba.", targetEn: "lip", targetEs: "labio" },
+                    { word: "Tip", en: "The waiter gave us great service, so we left a tip.", es: "El camarero nos dio un gran servicio, así que dejamos propina.", targetEn: "tip", targetEs: "propina" },
+                    { word: "Pin", en: "Use a pin to hold the paper together.", es: "Usa un alfiler para mantener el papel unido.", targetEn: "pin", targetEs: "alfiler" },
+                    { word: "Bin", en: "Please throw that paper in the bin.", es: "Por favor, tira ese papel a la papelera.", targetEn: "bin", targetEs: "papelera" },
+                    { word: "Win", en: "We hope our team will win the match tonight.", es: "Esperamos que nuestro equipo gane el partido esta noche.", targetEn: "win", targetEs: "gane" },
+                    { word: "Tin", en: "Open that tin of tuna for the salad.", es: "Abre esa lata de atún para la ensalada.", targetEn: "tin", targetEs: "lata" },
+                    { word: "Sin", en: "They say telling a white lie is not a sin.", es: "Dicen que decir una mentirijida piadosa no es un pecado.", targetEn: "sin", targetEs: "pecado" },
+                    { word: "Pig", en: "The farmer feeds the pig every morning.", es: "El granjero alimenta al cerdo todas las mañanas.", targetEn: "pig", targetEs: "cerdo" },
+                    { word: "Dig", en: "The dog loves to dig holes in the garden.", es: "Al perro le encanta cavar hoyos en el jardín.", targetEn: "dig", targetEs: "cavar" },
+                    { word: "Fig", en: "She ate a sweet fresh fig from the tree.", es: "Ella se comió un higo fresco y dulce del árbol.", targetEn: "fig", targetEs: "higo" },
+                    { word: "Big", en: "They live in a very big house downtown.", es: "Ellos viven en una casa muy grande en el centro.", targetEn: "big", targetEs: "grande" },
+                    { word: "Wig", en: "The actor wore a funny wig for the play.", es: "El actor llevó una peluca divertida para la obra.", targetEn: "wig", targetEs: "peluca" },
+                    { word: "Ill", en: "He stayed home from work because he felt ill.", es: "Se quedó en casa sin ir a trabajar porque se sentía enfermo.", targetEn: "ill", targetEs: "enfermo" },
+                    { word: "Hill", en: "They climbed up the steep hill to see the view.", es: "Subieron por la empinada colina para ver las vistas.", targetEn: "hill", targetEs: "colina" },
+                    { word: "Milk", en: "I like to drink a glass of warm milk before bed.", es: "Me gusta beber un vaso de leche tibia antes de dormir.", targetEn: "milk", targetEs: "leche" },
+                    { word: "Silk", en: "This dress is made of soft silk.", es: "Este vestido está hecho de seda suave.", targetEn: "silk", targetEs: "seda" },
+                    { word: "Fish", en: "We saw many colorful fish while scuba diving.", es: "Vimos muchos peces de colores mientras buceábamos.", targetEn: "fish", targetEs: "peces" },
+                    { word: "Dish", en: "My favorite traditional dish is paella.", es: "Mi plato tradicional favorito es la paella.", targetEn: "dish", targetEs: "plato" },
+                    { word: "Wish", en: "Make a wish before blowing out the candles.", es: "Pide un deseo antes de apagar las velas.", targetEn: "wish", targetEs: "deseo" },
+                    // 10 palabras nuevas más largas y cotidianas
+                    { word: "System", en: "The office computer system updated successfully overnight.", es: "El sistema informático de la oficina se actualizó con éxito durante la noche.", targetEn: "system", targetEs: "sistema" },
+                    { word: "Image", en: "She projected a clear image on the conference screen.", es: "Ella proyectó una imagen clara en la pantalla de la conferencia.", targetEn: "image", targetEs: "imagen" },
+                    { word: "Visit", en: "We plan to visit our relatives during the summer holiday.", es: "Planeamos visitar a nuestros familiares durante las vacaciones de verano.", targetEn: "visit", targetEs: "visitar" },
+                    { word: "Music", en: "Listening to relaxing music helps me concentrate while working.", es: "Escuchar música relajante me ayuda a concentrarme mientras trabajo.", targetEn: "music", targetEs: "música" },
+                    { word: "Finish", en: "He managed to finish his report before the deadline.", es: "Él se las arregló para terminar su informe antes de la fecha límite.", targetEn: "finish", targetEs: "terminar" },
+                    { word: "Limit", en: "There is a strict speed limit on this highway.", es: "Hay un límite de velocidad estricto en esta autopista.", targetEn: "limit", targetEs: "límite" },
+                    { word: "Liquid", en: "Water is a transparent liquid essential for life.", es: "El agua es un líquido transparente esencial para la vida.", targetEn: "liquid", targetEs: "líquido" },
+                    { word: "Citizen", en: "Every responsible citizen should vote in the elections.", es: "Todo ciudadano responsable debería votar en las elecciones.", targetEn: "citizen", targetEs: "ciudadano" },
+                    { word: "Biscuit", en: "She offered me a sweet chocolate biscuit with coffee.", es: "Ella me ofreció una galleta dulce de chocolate con el café.", targetEn: "biscuit", targetEs: "galleta" },
+                    { word: "Clinic", en: "The local health clinic opens early every morning.", es: "La clínica de salud local abre temprano cada mañana.", targetEn: "clinic", targetEs: "clínica" }
+                ]
+            },
+            "/p/": {
+                category: "Consonantes (Consonants)",
+                ipa: "/ <span class='ipa-hl'>p</span> /",
+                explanation: "<strong>Posición de la boca y lengua:</strong> Es una consonante bilabial sorda. Junta ambos labios firmemente para bloquear el aire y luego relájalos de golpe dejando escapar una pequeña explosión de aire (aspiración suave).",
+                items: [
+                    // 25 palabras base iniciales
+                    { word: "Pen", en: "Can I borrow your blue pen, please?", es: "¿Me prestas tu bolígrafo azul, por favor?", targetEn: "pen", targetEs: "bolígrafo" },
+                    { word: "Pig", en: "The little pink pig played in the mud.", es: "El pequeño cerdo rosado jugó en el lodo.", targetEn: "pig", targetEs: "cerdo" },
+                    { word: "Pot", en: "She is cooking soup in a large metal pot.", es: "Ella está cocinando sopa en una olla de metal grande.", targetEn: "pot", targetEs: "olla" },
+                    { word: "Pan", en: "Heat some oil in a frying pan.", es: "Calienta un poco de aceite en una sartén.", targetEn: "pan", targetEs: "sartén" },
+                    { word: "Pin", en: "Fasten the fabric with a small pin.", es: "Fija la tela con un alfiler pequeño.", targetEn: "pin", targetEs: "alfiler" },
+                    { word: "Pet", en: "They have a lovely dog as a pet.", es: "Ellos tienen un perro encantador como mascota.", targetEn: "pet", targetEs: "mascota" },
+                    { word: "Cup", en: "He poured hot tea into the white cup.", es: "Él sirvió té caliente en la taza blanca.", targetEn: "cup", targetEs: "taza" },
+                    { word: "Cap", en: "He wears a baseball cap to block the sun.", es: "Él lleva una gorra de béisbol para bloquear el sol.", targetEn: "cap", targetEs: "gorra" },
+                    { word: "Map", en: "We looked at the map to find the museum.", es: "Miramos el mapa para encontrar el museo.", targetEn: "map", targetEs: "mapa" },
+                    { word: "Mop", en: "Please clean the kitchen floor with a mop.", es: "Por favor, limpia el suelo de la cocina con una fregona.", targetEn: "mop", targetEs: "fregona" },
+                    { word: "Hop", en: "The little rabbit can hop very fast.", es: "El pequeño conejo puede dar saltitos muy rápido.", targetEn: "hop", targetEs: "saltitos" },
+                    { word: "Pop", en: "The balloon went pop with a loud noise.", es: "El globo hizo pop con un fuerte ruido.", targetEn: "pop", targetEs: "pop" },
+                    { word: "Top", en: "The cat climbed to the top of the roof.", es: "El gato subió a la parte superior del tejado.", targetEn: "top", targetEs: "parte superior" },
+                    { word: "Pond", en: "A few ducks are swimming in the pond.", es: "Unos cuantos patos están nadando en el estanque.", targetEn: "pond", targetEs: "estanque" },
+                    { word: "Pill", en: "Take this pill with a glass of water.", es: "Toma esta pastilla con un vaso de agua.", targetEn: "pill", targetEs: "pastilla" },
+                    { word: "Peer", en: "He had to peer through the foggy window.", es: "Él tuvo que mirar fijamente a través de la ventana empañada.", targetEn: "peer", targetEs: "mirar fijamente" },
+                    { word: "Pest", en: "That mosquito is a really annoying pest.", es: "Ese mosquito es una plaga realmente molesta.", targetEn: "pest", targetEs: "plaga" },
+                    { word: "Pulp", en: "Orange juice with pulp is my favorite.", es: "El zumo de naranja con pulpa es mi favorito.", targetEn: "pulp", targetEs: "pulpa" },
+                    { word: "Pump", en: "They need to pump air into the bicycle tire.", es: "Necesitan bombear aire en el neumático de la bicicleta.", targetEn: "pump", targetEs: "bombear" },
+                    { word: "Pack", en: "Don't forget to pack your suitcase for the trip.", es: "No olvides hacer tu maleta para el viaje.", targetEn: "pack", targetEs: "hacer" },
+                    { word: "Page", en: "Open your textbook to page ten.", es: "Abre tu libro de texto en la página diez.", targetEn: "page", targetEs: "página" },
+                    { word: "Pale", en: "His face looked quite pale after the shock.", es: "Su rostro se veía bastante pálido después de la impresión.", targetEn: "pale", targetEs: "pálido" },
+                    { word: "Park", en: "We love walking through the green park.", es: "Nos encanta pasear por el parque verde.", targetEn: "park", targetEs: "parque" },
+                    { word: "Past", en: "We should learn from our mistakes in the past.", es: "Debemos aprender de nuestros errores en el pasado.", targetEn: "past", targetEs: "pasado" },
+                    { word: "Path", en: "Follow this narrow path to reach the lake.", es: "Sigue este sendero estrecho para llegar al lago.", targetEn: "path", targetEs: "sendero" },
+                    // 10 palabras nuevas más largas y cotidianas
+                    { word: "People", en: "Many people gathered in the town square for the festival.", es: "Muchas personas se reunieron en la plaza del pueblo para el festival.", targetEn: "people", targetEs: "personas" },
+                    { word: "Picture", en: "She took a lovely picture of the sunset with her phone.", es: "Ella tomó una foto encantadora de la puesta de sol con su teléfono.", targetEn: "picture", targetEs: "foto" },
+                    { word: "Project", en: "The engineering team finished their complex design project.", es: "El equipo de ingeniería terminó su complejo proyecto de diseño.", targetEn: "project", targetEs: "proyecto" },
+                    { word: "Paper", en: "He signed the important business document on paper.", es: "Él firmó el importante documento de negocios en papel.", targetEn: "paper", targetEs: "papel" },
+                    { word: "Palace", en: "Tourists lined up to visit the old royal palace.", es: "Los turistas hicieron cola para visitar el viejo palacio real.", targetEn: "palace", targetEs: "palacio" },
+                    { word: "Public", en: "The library is a quiet public building open to everyone.", es: "La biblioteca es un edificio público tranquilo abierto a todos.", targetEn: "public", targetEs: "público" },
+                    { word: "Pardon", en: "He asked for a polite pardon when he interrupted the meeting.", es: "Pidió un educado perdón cuando interrumpió la reunión.", targetEn: "pardon", targetEs: "perdón" },
+                    { word: "Present", en: "She received a wonderful birthday present from her friends.", es: "Ella recibió un maravilloso regalo de cumpleaños de sus amigos.", targetEn: "present", targetEs: "regalo" },
+                    { word: "Provide", en: "Local volunteers provide warm meals for the homeless.", es: "Los voluntarios locales proporcionan comidas calientes para los sin techo.", targetEn: "provide", targetEs: "proporcionan" },
+                    { word: "Proper", en: "Make sure you wear proper clothing for the formal interview.", es: "Asegúrate de llevar ropa adecuada para la entrevista formal.", targetEn: "proper", targetEs: "adecuada" }
+                ]
+            }
+        };
+
+        let currentPhonemeList = [];
+        let currentKey = "";
+        let index = 0;
+        let currentUtterance = null;
+
+        function buildSelectionScreen() {
+            const container = document.getElementById('phonemes-container');
+            container.innerHTML = '';
+
+            const categories = {};
+            for (const [key, val] of Object.entries(data)) {
+                if (!categories[val.category]) {
+                    categories[val.category] = [];
+                }
+                categories[val.category].push({ key, items: val.items });
+            }
+
+            for (const [catName, phonemes] of Object.entries(categories)) {
+                const groupTitle = document.createElement('div');
+                groupTitle.className = 'group-title';
+                groupTitle.innerText = catName;
+                container.appendChild(groupTitle);
+
+                const grid = document.createElement('div');
+                grid.className = 'grid-phonemes';
+
+                phonemes.forEach(p => {
+                    const firstWords = p.items.slice(0, 3).map(i => i.word).join(', ');
+                    
+                    const card = document.createElement('div');
+                    card.className = 'phoneme-card';
+                    card.onclick = () => startStudy(p.key);
+                    card.innerHTML = `
+                        <div class="phoneme-symbol">${p.key}</div>
+                        <div class="phoneme-example">${firstWords}</div>
+                    `;
+                    grid.appendChild(card);
+                });
+
+                container.appendChild(grid);
+            }
+        }
+
+        function startStudy(key) {
+            currentKey = key;
+            currentPhonemeList = data[key].items || [];
+            index = 0;
+            document.getElementById('screen-select').classList.add('hidden');
+            document.getElementById('screen-study').classList.remove('hidden');
+            renderCard();
+        }
+
+        function goBack() {
+            if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+            document.getElementById('screen-study').classList.add('hidden');
+            document.getElementById('screen-select').classList.remove('hidden');
+        }
+
+        function renderCard() {
+            if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+            const current = currentPhonemeList[index];
+            const phonemeData = data[currentKey];
+
+            document.getElementById('counter-badge').innerText = `Frase ${index + 1} / ${currentPhonemeList.length}`;
+            document.getElementById('target-word').innerText = current.word;
+            
+            document.getElementById('ipa-transcript').innerHTML = phonemeData.ipa || "";
+            document.getElementById('explanation-area').innerHTML = phonemeData.explanation || "";
+
+            let htmlEn = current.en;
+            if (current.targetEn) {
+                const targetsEn = current.targetEn.split(',').map(t => t.trim());
+                targetsEn.forEach(t => {
+                    const regexEn = new RegExp(`\\b(${t})\\b`, 'gi');
+                    htmlEn = htmlEn.replace(regexEn, '<span class="hl-yellow">$1</span>');
+                });
+            }
+            document.getElementById('english-text').innerHTML = htmlEn;
+
+            let htmlEs = current.es;
+            if (current.targetEs) {
+                const targetsEs = current.targetEs.split(',').map(t => t.trim());
+                targetsEs.forEach(t => {
+                    const regexEs = new RegExp(`\\b(${t})\\b`, 'gi');
+                    htmlEs = htmlEs.replace(regexEs, '<span class="hl-blue">$1</span>');
+                });
+            }
+            document.getElementById('spanish-text').innerHTML = htmlEs;
+
+            hideSentence();
+            hideExplanation();
+
+            document.getElementById('btn-prev').disabled = index === 0;
+            document.getElementById('btn-next').disabled = index === currentPhonemeList.length - 1;
+        }
+
+        function showSentence() {
+            document.getElementById('sentence-area').classList.remove('hidden');
+        }
+
+        function hideSentence() {
+            document.getElementById('sentence-area').classList.add('hidden');
+        }
+
+        function showExplanation() {
+            document.getElementById('explanation-area').classList.remove('hidden');
+        }
+
+        function hideExplanation() {
+            document.getElementById('explanation-area').classList.add('hidden');
+        }
+
+        function nextSentence() {
+            if (index < currentPhonemeList.length - 1) {
+                index++;
+                renderCard();
+            }
+        }
+
+        function prevSentence() {
+            if (index > 0) {
+                index--;
+                renderCard();
+            }
+        }
+
+        function playAudio(type) {
+            if (!('speechSynthesis' in window)) {
+                alert("Speech synthesis is not supported in this browser.");
+                return;
+            }
+
+            window.speechSynthesis.cancel();
+            const current = currentPhonemeList[index];
+            
+            if (type === 'word') {
+                currentUtterance = new SpeechSynthesisUtterance(current.word);
+                currentUtterance.lang = 'en-US';
+                currentUtterance.rate = 0.85;
+                window.speechSynthesis.speak(currentUtterance);
+            } else {
+                currentUtterance = new SpeechSynthesisUtterance(current.en);
+                currentUtterance.lang = 'en-US';
+                currentUtterance.rate = 0.85;
+                window.speechSynthesis.speak(currentUtterance);
+            }
+        }
+
+        window.onload = buildSelectionScreen;
+    </script>
+</body>
+</html>
