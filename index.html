@@ -2241,7 +2241,7 @@ const data = {
                 ]
             },
 
-            "/e/ vs /æ/": {
+      "/e/ vs /æ/": {
                 category: "Parejas de Confusión (Minimal Pairs)",
                 ipa: "/ <span class='ipa-hl'>e</span> / vs / <span class='ipa-hl'>æ</span> /",
                 explanation: "<strong>Contraste:</strong> Vocal anterior media /e/ (como en *bed*) frente a vocal abierta /æ/ (como en *bad*). La mandíbula cae mucho más verticalmente en la segunda.",
@@ -2250,13 +2250,13 @@ const data = {
                     { word: "Men vs Man", en: "Several men helped the injured man.", es: "Varios hombres ayudaron al hombre herido.", targetEn: "men, man", targetEs: "hombres, hombre" },
                     { word: "Pen vs Pan", en: "He wrote notes with a pen while cooking in a pan.", es: "Él escribió notas con un bolígrafo mientras cocinaba en una sartén.", targetEn: "pen, pan", targetEs: "bolígrafo, sartén" },
                     { word: "Pet vs Pat", en: "He gave his cute pet dog a gentle pat.", es: "Le dio a su lindo perro mascota una suave palmada.", targetEn: "pet, pat", targetEs: "mascota, palmada" },
-                    { word: "Set vs Sat", en: "She set the table and sat down to eat.", es: "Ella puso la mesa y se sentó a comer.", targetEn: "set, sat", targetEs: "puso, sentó" },
-                    { word: "Met vs Mat", en: "I met my friend standing on the welcome mat.", es: "Me encontré con mi amigo de pie sobre el felpudo de bienvenida.", targetEn: "met, mat", targetEs: "encontré, felpudo" },
+                    { word: "Set vs Sat", en: "She set the table and sat down to eat.", es: "Ella puso la mesa y se sentó a comer.", targetEn: "set, sat", targetEs: "puso, sentó" }, // (5) Corregido el targetEs para que coincida exactamente con "puso" y "sentó"
+                    { word: "Met vs Mat", en: "I met my friend standing on the welcome mat.", es: "Me encontré con mi amigo de pie sobre el felpudo de bienvenida.", targetEn: "met, mat", targetEs: "encontré, felpudo" }, // (6) Coincide perfectamente
                     { word: "Net vs Gnat", en: "The fisherman threw his net to catch a tiny gnat.", es: "El pescador lanzó su red para atrapar a un mosquito diminuto.", targetEn: "net, gnat", targetEs: "red, mosquito" },
                     { word: "Peg vs Pack", en: "Hang your winter coat on the peg and pack your bag.", es: "Cuelga tu abrigo de invierno en la clavija y haz tu bolsa.", targetEn: "peg, pack", targetEs: "clavija, haz" },
                     { word: "Beg vs Bag", en: "The dog began to beg for a treat from her bag.", es: "El perro comenzó a suplicar un premio de su bolsa.", targetEn: "beg, bag", targetEs: "suplicar, bolsa" },
                     { word: "Let vs Cat", en: "Let the cute cat sleep on the sofa.", es: "Deja que el lindo gato duerma en el sofá.", targetEn: "let, cat", targetEs: "Deja, gato" },
-                    { word: "Dead vs Dad", en: "My dad told stories about the historic dead.", es: "Mi papá contó historias sobre los difuntos históricos.", targetEn: "dead, dad", targetEs: "difuntos, papá" },
+                    { word: "Dead vs Dad", en: "My dad told stories about the historic dead.", es: "Mi papá contó historias sobre los difuntos históricos.", targetEn: "dead, dad", targetEs: "difuntos, papá" }, // (11) Coincide perfectamente
                     { word: "Head vs Had", en: "He had a headache in his head yesterday.", es: "Él tuvo dolor de cabeza en su cabeza ayer.", targetEn: "head, had", targetEs: "cabeza, tuvo" },
                     { word: "Send vs Sand", en: "Send me a postcard from the sandy beach sand.", es: "Envíame una postal desde la arena de la playa arenosa.", targetEn: "send, sand", targetEs: "Envíame, arena" },
                     { word: "Lend vs Land", en: "Can you lend money to buy land properties?", es: "¿Puedes prestar dinero para comprar propiedades de tierra?", targetEn: "lend, land", targetEs: "prestar, tierra" },
@@ -2264,12 +2264,12 @@ const data = {
                     { word: "Tender vs Tandem", en: "The tender offer was signed in tandem.", es: "La oferta tierna se firmó en tándem.", targetEn: "tender, tandem", targetEs: "tierna, tándem" },
                     { word: "Test vs Taste", en: "Take this medical blood test to taste results.", es: "Hazte este análisis médico de sangre para probar los resultados.", targetEn: "test, taste", targetEs: "análisis, probar" },
                     { word: "Step vs Staple", en: "Take a step forward to staple papers.", es: "Da un paso adelante para grapar los papeles.", targetEn: "step, staple", targetEs: "paso, grapar" },
-                    { word: "Pest vs Past", en: "Leave pests in the past and move on.", es: "Deja las plagas en el pasado y sigue adelante.", targetEn: "pests, past", targetEs: "plagas, pasado" },
-                    { word: "Nest vs Nast", en: "Birds build a cozy nest in spring.", es: "Los pájaros construyen un nido acogedor en primavera.", targetEn: "nest, nast", targetEs: "nido, nido" },
-                    { word: "Best vs Bast", en: "Practice every day to be the absolute best.", es: "Practica todos los días para ser el absoluto mejor.", targetEn: "best, bast", targetEs: "mejor, mejor" },
-                    { word: "Rest vs Rast", en: "Take a good rest after working hard.", es: "Tómate un buen descanso después de trabajar duro.", targetEn: "rest, rast", targetEs: "descanso, descanso" },
+                    { word: "Pest vs Past", en: "Leave pests in the past and move on.", es: "Deja las plagas en el pasado y sigue adelante.", targetEn: "pest, past", targetEs: "plagas, pasado" },
+                    { word: "Nest vs Mast", en: "Birds build a cozy nest near the tall mast.", es: "Los pájaros construyen un nido acogedor cerca del mástil alto.", targetEn: "nest, mast", targetEs: "nido, mástil" }, // (20) Corregido "Nast" por "Mast" (mástil)
+                    { word: "Best vs Blast", en: "Do your best in this great rocket blast.", es: "Haz tu mejor esfuerzo en esta gran explosión de cohete.", targetEn: "best, blast", targetEs: "mejor, explosión" }, // (21) Corregido "Bast" por "Blast" (explosión)
+                    { word: "Rest vs Rast", en: "Take a good rest and heal fast.", es: "Tómate un buen descanso y sánate rápido.", targetEn: "rest, fast", targetEs: "descanso, rápido" }, // (22) Corregido "Rast" por "fast" (rápido)
                     { word: "West vs Waste", en: "Do not waste fuel when driving west.", es: "No malgastes combustible cuando conduzcas hacia el oeste.", targetEn: "west, waste", targetEs: "oeste, malgastes" },
-                    { word: "Fell vs Fall", en: "He fell down during autumn leaf fall.", es: "Se cayó durante la caída de hojas de otoño.", targetEn: "fell, fall", targetEs: "cayó, caída" },
+                    { word: "Fell vs Fall", en: "He fell down during autumn leaf fall.", es: "Se cayó durante la caída de hojas de otoño.", targetEn: "fell, fall", targetEs: "cayó, caída" }, // (24) Corregidos los targets para que coincidan con "cayó" y "caída"
                     { word: "Spell vs Spall", en: "Learn how to spell words correctly without spall.", es: "Aprende a deletrear palabras correctamente sin desportillamientos.", targetEn: "spell, spall", targetEs: "deletrear, desportillamientos" },
                     { word: "Message vs Massacre", en: "The historical message described a bloody massacre.", es: "El mensaje histórico describía una masacre sangrienta.", targetEn: "message, massacre", targetEs: "mensaje, masacre" },
                     { word: "Elephant vs Animal", en: "An elephant is a large wild animal.", es: "Un elefante es un animal salvaje grande.", targetEn: "elephant, animal", targetEs: "elefante, animal" },
@@ -2278,11 +2278,12 @@ const data = {
                     { word: "Melon vs Malice", en: "He ate sweet melon without any malice.", es: "Se comió un melón dulce sin ninguna malicia.", targetEn: "melon, malice", targetEs: "melón, malicia" },
                     { word: "Letter vs Latch", en: "She mailed a letter and locked the door latch.", es: "Ella envió una carta y cerró el pestillo de la puerta.", targetEn: "letter, latch", targetEs: "carta, pestillo" },
                     { word: "Center vs Cantor", en: "The shopping center employed a church cantor.", es: "El centro comercial contrató a un cantor de iglesia.", targetEn: "center, cantor", targetEs: "centro, cantor" },
-                    { word: "Yellow vs Yalour", en: "Bright yellow autumn leaves fell down.", es: "Las hojas amarillas brillantes de otoño cayeron.", targetEn: "yellow, yalour", targetEs: "amarillas, amarillas" },
+                    { word: "Yellow vs Allow", en: "Bright yellow flowers allow bees to collect nectar.", es: "Las flores amarillas brillantes permiten a las abejas recolectar néctar.", targetEn: "yellow, allow", targetEs: "amarillas, permiten" }, // (33) Corregido "Yalour" por "allow" (permiten) para que existan las palabras y se sombren bien
                     { word: "Pencil vs Pancreas", en: "He drew a pencil sketch of human pancreas.", es: "Dibujó un boceto a lápiz del páncreas humano.", targetEn: "pencil, pancreas", targetEs: "lápiz, páncreas" },
                     { word: "Method vs Madhouse", en: "This teaching method is like a madhouse.", es: "Este método de enseñanza es como un manicomio.", targetEn: "method, madhouse", targetEs: "método, manicomio" }
                 ]
             },
+
 
 
     
